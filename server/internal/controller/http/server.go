@@ -32,6 +32,8 @@ func NewServer(logger log.Logger, opts ServerOptions) *http.Server {
 	mux.NotFound(NotFound)
 	mux.MethodNotAllowed(MethodNotAllowed)
 
+	mux.Mount("/", Router())
+
 	return &http.Server{
 		Addr:    opts.Addr,
 		Handler: mux,

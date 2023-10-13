@@ -1,0 +1,6 @@
+__pycache__/
+
+/data/results/formatted/*
+/data/results/stats/*
+!/data/results/formatted/.keep
+!/data/results/stats/.keep

@@ -19,10 +19,10 @@ type (
 	}
 )
 
-func NewConfig(path string) (*Config, error) {
+func NewConfig() (*Config, error) {
 	cfg := new(Config)
 
-	err := cleanenv.ReadConfig(path, cfg)
+	err := cleanenv.ReadEnv(cfg)
 	if err != nil {
 		return nil, err
 	}

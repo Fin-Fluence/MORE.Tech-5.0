@@ -1,0 +1,28 @@
+services:
+  server:
+    container_name: app-server
+    build: server
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 3000:3000
+    env_file:
+      - ./server/configs/docker.dev.env
+    environment:
+      POSTGRES_URI: postgres://postgres:test@db:5432/postgres?search_path=app
+  
+  db:
+    container_name: app-db
+    image: postgres:alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: test
+    volumes:
+      - ./server/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -q -U postgres -d postgres"]
+      interval: 5s
+      timeout: 30s
+      retries: 5

@@ -10,7 +10,7 @@ import (
 )
 
 func Run(cfg *Config, logger log.Logger) error {
-	postgres, err := postgres.New(context.Background(), "")
+	postgres, err := postgres.New(context.Background(), cfg.Postgres.URI)
 	if err != nil {
 		return err
 	}

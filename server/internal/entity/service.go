@@ -8,3 +8,9 @@ type Service struct {
 	Capability bool
 	Activity   bool
 }
+
+type OfficeService struct {
+	*Service
+	CurrentTicket string
+	LastTicket    string
+}

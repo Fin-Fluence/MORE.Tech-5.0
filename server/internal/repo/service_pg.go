@@ -13,8 +13,8 @@ type ServicePostgres struct {
 	*postgres.Postgres
 }
 
-func NewServicePostgres(pg *postgres.Postgres) *OpenHoursPostgres {
-	return &OpenHoursPostgres{pg}
+func NewServicePostgres(pg *postgres.Postgres) *ServicePostgres {
+	return &ServicePostgres{pg}
 }
 
 func (s *ServicePostgres) GetByAtmId(ctx context.Context, atmID uuid.UUID) ([]entity.Service, error) {
@@ -26,4 +26,23 @@ func (s *ServicePostgres) GetByAtmId(ctx context.Context, atmID uuid.UUID) ([]en
 	}
 
 	return pgx.CollectRows(rows, pgx.RowToStructByPos[entity.Service])
+}
+
+type OfficeServicePostgres struct {
+	*postgres.Postgres
+}
+
+func NewOfficeServicePostgres(pg *postgres.Postgres) *OfficeServicePostgres {
+	return &OfficeServicePostgres{pg}
+}
+
+func (s *OfficeServicePostgres) GetByOfficeId(ctx context.Context, officeID uuid.UUID) ([]entity.OfficeService, error) {
+	const query = `SELECT id, name, capability, activity, current_ticket, last_ticket FROM service WHERE office_id = $1`
+
+	rows, err := s.Pool.Query(ctx, query, officeID)
+	if err != nil {
+		return nil, err
+	}
+
+	return pgx.CollectRows(rows, pgx.RowToStructByPos[entity.OfficeService])
 }

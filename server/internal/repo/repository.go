@@ -22,3 +22,7 @@ type OpenHours interface {
 type Service interface {
 	GetByAtmId(ctx context.Context, atmID uuid.UUID) ([]entity.Service, error)
 }
+
+type OfficeService interface {
+	GetByOfficeId(ctx context.Context, officeID uuid.UUID) ([]entity.OfficeService, error)
+}

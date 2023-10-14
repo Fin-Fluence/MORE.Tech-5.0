@@ -3,21 +3,54 @@ import DepartamentsList from '@/components/DepartamentsList.vue';
 import TheFilter from '@/components/TheFilter.vue';
 import DeparnamentInfo from '@/components/DeparnamentInfo.vue';
 import TheMap from '@/components/TheMap.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 let filterIsActive = ref(false)
 let infoIsActive = ref(false)
-
-
+let openFullContent = ref(false)
 
 const openInfoDeportament = () => {
   infoIsActive.value = true
 }
+
+const openContentFull = () => {
+  openFullContent.value = !openFullContent.value
+}
+
+const offices = ref([])
+const getOffice = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/atm', {
+      method: 'GET'
+    });
+
+      const data = await response.json()
+      offices.value = data
+
+  } catch (err) {
+    console.error('Произошла ошибка:', err)
+  }
+};
+
+
+const mapInit = () => {
+  getOffice();
+}
+
+onMounted(() => {
+})
 </script>
 
 <template>
   <div class="home">
-    <div class="content">
+    <div class="content"
+      :class="{openFull: openFullContent}"
+    >
+      <div class="mobile-btn"
+        @click="openContentFull"
+      >
+
+      </div>
       <the-filter
         :active="filterIsActive"
         @closeFilter="() => filterIsActive = false"
@@ -107,15 +140,33 @@ const openInfoDeportament = () => {
       <div class="departaments custom-scroll">
         <departaments-list
           v-for="(departament, index) in [1,2]" :key="index"
+          :title="'Отделения в радиусе 3 км:'"
           @openInfoDepartament="openInfoDeportament"
         />
       </div>
     </div>
-    <the-map/>
+    <the-map
+      :offices="offices"
+      @mapInit="mapInit()"
+    />
   </div>
 </template>
 
 <style lang="scss">
+.mobile-btn {
+  display: none;
+  width: 70px;
+  height: 4px;
+  background: rgb(226, 229, 233);
+  position: absolute;
+  top: 5px;
+  border-radius: 12px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  @media (max-width: 539px) {
+    display: block;
+  }
+}
 .departaments {
   overflow: auto;
   flex: 1;
@@ -123,6 +174,9 @@ const openInfoDeportament = () => {
 .home {
   position: relative;
   display: flex;
+  @media (max-width: 539px) {
+    flex-direction: column-reverse;
+  }
 }
 .content {
   background: #1E1E1E;
@@ -135,6 +189,18 @@ const openInfoDeportament = () => {
   height: calc(100vh - 71px);
   position: relative;
   overflow: hidden;
+  @media (max-width: 539px) {
+    transition: .2s;
+    position: absolute;
+    z-index: 5;
+    height: calc(100vh - 71px);
+    top: 100%;
+    width: 100%;
+    max-width: none;
+    &.openFull {
+      top: 0px;
+    }
+  }
   &__header {
 
   }
@@ -188,16 +254,24 @@ const openInfoDeportament = () => {
 
   &__filter-whom {
     margin-bottom: 40px;
+
   }
 
   &__whom-list {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
+    @media (max-width: 539px) {
+      flex-wrap: nowrap;
+      overflow: auto;
+    }
   }
 
   &__whom-btn {
     border: 1px solid #4789EB;
+    @media (max-width: 539px) {
+      white-space: nowrap;
+    }
     &.btn {
       color: #fff;
       padding: 7px 20px;

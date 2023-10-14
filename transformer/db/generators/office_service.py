@@ -4,7 +4,8 @@ import random
 
 class OfficeServiceGenerator:
   def __init__(self, office, names=['Test1', 'Test2']):
-    self.names = names
+    # self.names = names
+    self.names = ['BrokerService', 'ConversionFL', 'DebitCardIssuance', 'CreditCardIssuance', 'Mortgage', 'ExrowAccount', 'DepositsAndAccountsFL']
     self.bool_variants = [True, False]
     self.office = office
 

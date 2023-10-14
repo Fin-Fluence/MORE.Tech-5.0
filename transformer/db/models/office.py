@@ -12,7 +12,7 @@ class Office(BaseModel):
   status = CharField(max_length=255)
   rko = BooleanField(null=True)
   type = CharField(max_length=255)
-  sale_point_name = CharField(max_length=255)
+  sale_point_format = CharField(max_length=255)
   suo_availability = BooleanField(null=True)
   has_ramp = BooleanField(null=True)
   distance = IntegerField()

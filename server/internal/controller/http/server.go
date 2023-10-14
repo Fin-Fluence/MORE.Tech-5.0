@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
-	httpSwagger "github.com/swaggo/http-swagger"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 type ServerOptions struct {
@@ -38,9 +38,7 @@ func NewServer(logger log.Logger, services Services, opts ServerOptions) *http.S
 	mux.MethodNotAllowed(MethodNotAllowed)
 
 	mux.Mount("/", Router(services))
-	mux.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL(opts.Addr+"/swagger/doc.json"),
-	))
+	mux.Get("/swagger/*", httpSwagger.Handler())
 
 	return &http.Server{
 		Addr:    opts.Addr,

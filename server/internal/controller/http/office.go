@@ -15,6 +15,15 @@ func NewOffice(service service.Office) *Office {
 	return &Office{service}
 }
 
+// GetAll godoc
+//
+//	@Summary		Get all offices
+//	@Tags			Offices
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	[]entity.Office
+//	@Failure		500	{object}	JSONError
+//	@Router			/office [get]
 func (o *Office) GetAll(w http.ResponseWriter, r *http.Request) {
 	offices, err := o.service.GetAll()
 	if err != nil {

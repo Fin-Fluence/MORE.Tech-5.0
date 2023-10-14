@@ -7,13 +7,17 @@ class DataFixturing(BaseParser):
     super().__init__('transformer/data/results/formatted/', '')
 
   def perform(self):
+    print('Start loading ATMS')
     data = self.load_data('atms.json')
     for entry in data:
-      print(Serilizer.create_atm(entry))
+      Serilizer.create_atm(entry)
+    print('Complete')
 
+    print('Start loading OFFICESS')
     data = self.load_data('offices.json')
     for entry in data:
-      print(Serilizer.create_office(entry))
+      Serilizer.create_office(entry)
+    print('Complete')
 
   def save(self):
     pass

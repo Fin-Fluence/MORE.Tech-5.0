@@ -7,6 +7,7 @@ class DataFixturing(BaseParser):
     super().__init__('transformer/data/results/formatted/', '')
 
   def perform(self):
+    Serilizer.delete()
     print('Start loading ATMS')
     data = self.load_data('atms.json')
     for entry in data:

@@ -10,6 +10,14 @@ class Serilizer:
     pass
   
   @staticmethod
+  def delete():
+    Position.delete().execute()
+    Atm.delete().execute()
+    Service.delete().execute()
+    OpenHours.delete().execute()
+    Office.delete().execute()
+    OfficeService.delete().execute()
+
   def create_atm(json):
     position = Position.create(
       latitude=json.get('latitude', 0),

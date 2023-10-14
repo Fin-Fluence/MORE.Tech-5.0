@@ -1,6 +1,7 @@
 
 <script setup>
 import { defineProps, defineEmits } from 'vue';
+import { useFilterStore } from '@/stores/filterStore';
 
 const props = defineProps({
     active: {
@@ -13,6 +14,24 @@ const emit = defineEmits(['closeFilter'])
 const closeFilter = () => {
     emit('closeFilter')
 }
+
+
+let filterStore = useFilterStore();
+
+const resetFilter = () => {
+    filterStore.resetFilter()
+}
+
+const toggleBtn = (nameBtn, value) => {
+    if(!filterStore.filter[nameBtn]) {
+        filterStore.setFilterProperty(nameBtn,value)
+    } else if(filterStore.filter[nameBtn] === value) {
+        filterStore.deleteFilterProperty(nameBtn,value)
+    } else {
+        filterStore.setFilterProperty(nameBtn,value)
+    }
+}
+
 </script>
 
 <template>
@@ -24,7 +43,9 @@ const closeFilter = () => {
                 <div class="filter__header-title">
                     Фильтры
                 </div>
-                <div class="filter__header-reset">
+                <div class="filter__header-reset"
+                    @click="resetFilter()"
+                >
                     Сбросить
                 </div>
             </div>
@@ -40,7 +61,7 @@ const closeFilter = () => {
                     Доступно для маломобильных граждан
                 </span>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" v-model="filterStore.filter.limited">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -49,7 +70,7 @@ const closeFilter = () => {
                     Работает в выходные
                 </span>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" v-model="filterStore.filter.weekend">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -118,10 +139,17 @@ const closeFilter = () => {
                     Карты
                 </span>
                 <div class="filter__select-list">
-                    <button>
+                    <button
+                        :class="{btn_blue: filterStore.filter.cards === 'debit'}"
+                        @click="toggleBtn('cards', 'debit')"
+                    >
                         Дебетовые
                     </button>
-                    <button>
+                    <button
+                        :class="{btn_blue: filterStore.filter.cards === 'credit'}"
+                        @click="toggleBtn('cards', 'credit')"
+
+                    >
                         Кредитные
                     </button>
                 </div>
@@ -131,10 +159,16 @@ const closeFilter = () => {
                     Инвестиции
                 </span>
                 <div class="filter__select-list">
-                    <button>
+                    <button
+                        :class="{btn_blue: filterStore.filter.investments === 'brokerage_services'}"
+                        @click="toggleBtn('investments', 'brokerage_services')"
+                    >
                         Брокерское обслуживание
                     </button>
-                    <button>
+                    <button
+                        :class="{btn_blue: filterStore.filter.investments === 'trust_management'}"
+                        @click="toggleBtn('investments', 'trust_management')"
+                    >
                         Доверительное управление
                     </button>
                 </div>
@@ -144,13 +178,22 @@ const closeFilter = () => {
                     Займы
                 </span>
                 <div class="filter__select-list">
-                    <button>
+                    <button
+                        :class="{btn_blue: filterStore.filter.loans === 'credit'}"
+                        @click="toggleBtn('loans', 'credit')"
+                    >
                         Кредит
                     </button>
-                    <button>
+                    <button
+                        :class="{btn_blue: filterStore.filter.loans === 'car_loan'}"
+                        @click="toggleBtn('loans', 'car_loan')"
+                    >
                         Автокредит
                     </button>
-                    <button>
+                    <button
+                        :class="{btn_blue: filterStore.filter.loans === 'mortgage'}"
+                        @click="toggleBtn('loans', 'mortgage')"
+                    >
                         Ипотека
                     </button>
                 </div>
@@ -160,10 +203,16 @@ const closeFilter = () => {
                     Услуги
                 </span>
                 <div class="filter__select-list">
-                    <button>
+                    <button
+                        :class="{btn_blue: filterStore.filter.Services === 'urrency_conversion'}"
+                        @click="toggleBtn('Services', 'urrency_conversion')"
+                    >
                         Конвертация валюты
                     </button>
-                    <button>
+                    <button
+                        :class="{btn_blue: filterStore.filter.Services === 'payment_services'}"
+                        @click="toggleBtn('Services', 'payment_services')"
+                    >
                         Оплата услуг
                     </button>
                 </div>
@@ -173,7 +222,7 @@ const closeFilter = () => {
                     Аренда сейфовых ячеек
                 </span>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" v-model="filterStore.filter.rent_boxes">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -182,16 +231,16 @@ const closeFilter = () => {
                     Регистрация биометрии
                 </span>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" v-model="filterStore.filter.biometric_registration">
                     <span class="slider round"></span>
                 </label>
             </div>
             <div class="filter__item _checkbox">
                 <span class="title">
-                    Sim карты ВТБ мобайля ИП
+                    Sim карты ВТБ мобайл ИП
                 </span>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" v-model="filterStore.filter.sims">
                     <span class="slider round"></span>
                 </label>
             </div>
@@ -200,7 +249,7 @@ const closeFilter = () => {
                     Регистрация ИП
                 </span>
                 <label class="switch">
-                    <input type="checkbox">
+                    <input type="checkbox" v-model="filterStore.filter.registration_ip">
                     <span class="slider round"></span>
                 </label>
             </div>

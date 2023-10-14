@@ -1,59 +1,17 @@
 <script setup>
 import * as ymaps3 from 'ymaps3';
 import markImage from '@/assets/images/icons/mark.svg';
-import { ref } from 'vue';
-
-import { defineEmits } from 'vue';
-
-const emit = defineEmits(['openInfoDepartament'])
+import { ref, defineProps, defineEmits, watch } from 'vue';
 
 
-const marks = ref([
-    {   coordinates: [37.94, 55.76],
-        workload: 0,
-        id: 0
-    },
-    {   coordinates: [37.74, 55.76],
-        workload: 1,
-        id: 1
-    },
-    {   coordinates: [38.14, 55.86],
-        workload: 5,
-        id: 2
-    },
-    {   coordinates: [37.74, 55.76],
-        workload: 4,
-        id: 3
-    },
-    {   coordinates: [37.88, 55.70],
-        workload: 3,
-        id: 4
-    },
-    {   coordinates: [38.02, 55.74],
-        workload: 1,
-        id: 5
-    },
-    {   coordinates: [37.68, 55.82],
-        workload: 1,
-        id: 6
-    },
-    {   coordinates: [37.86, 55.82],
-        workload: 5,
-        id: 7
-    },
-    {   coordinates: [37.94, 55.76],
-        workload: 4,
-        id: 8
-    },
-    {   coordinates: [37.82, 55.78],
-        workload: 3,
-        id: 9
-    },
-    {   coordinates: [37.90, 55.68],
-        workload: 2,
-        id: 10
-    },
-])
+const emit = defineEmits(['openInfoDepartament', 'mapInit'])
+
+const props = defineProps({
+    offices: {
+        type: Array,
+    }
+})
+
 const userCoordinates = ref(null)
 
 async function getUserCoordinates() {
@@ -63,7 +21,6 @@ async function getUserCoordinates() {
                 const latitude = position.coords.latitude;
                 const longitude = position.coords.longitude;
                 userCoordinates.value = [longitude, latitude];
-                console.log('Получены координаты пользователя:', userCoordinates.value);
                 resolve();
             },
             (error) => {
@@ -132,10 +89,6 @@ async function initMap() {
         contentPin.classList.add('mark')
         contentPin.innerHTML = `<img src=${markImage}>`;
 
-
-
-        createCluster(marks.value)
-
         // user
         const content = document.createElement('section');
         content.innerHTML = `<div class="me"></div>`;
@@ -146,34 +99,38 @@ async function initMap() {
             content
         );
         map.addChild(userMark);
+
+        emit('mapInit')
     } catch (err) {
         console.log(err)
     }
 }
 
+let clusterer = null;
 const createCluster = (marks) => {
-    const contentPin = document.createElement('div');
-    contentPin.classList.add('mark');
-    contentPin.innerHTML = `<img src=${markImage}>`;
+    if(!marks) return
+
+    // if (clusterer) {
+    //     map.remove(clusterer);
+    // }
 
 
     const marker = (feature) => {
-    const contentPin = document.createElement('div');
-    contentPin.classList.add('mark');
-    contentPin.classList.add(`workload_${feature.properties.workload}`);
-    contentPin.setAttribute('data-id', feature.id);
-    contentPin.innerHTML = `<img src=${markImage}>`;
+        const contentPin = document.createElement('div');
+        contentPin.classList.add('mark');
+        contentPin.setAttribute('data-id', feature.id);
+        contentPin.innerHTML = `<img src=${markImage}>`;
 
-    const markerElement = new ymaps3.YMapMarker({
-        coordinates: feature.geometry.coordinates,
-        source: 'my-source',
-        onClick: () => {
-            emit('openInfoDepartament', 'feature.id');
-        }
-    }, contentPin.cloneNode(true));
+        const markerElement = new ymaps3.YMapMarker({
+            coordinates: feature.geometry.coordinates,
+            source: 'my-source',
+            onClick: () => {
+                emit('openInfoDepartament', 'feature.id');
+            }
+        }, contentPin.cloneNode(true));
 
-    return markerElement;
-};
+        return markerElement;
+    };
 
     const cluster = (coordinates, features) =>
         new ymaps3.YMapMarker({
@@ -183,16 +140,15 @@ const createCluster = (marks) => {
         circle(features.length).cloneNode(true)
     );
 
-    
 
     const points = marks.map((mark,i) => ({
         type: 'Feature',
         id: i,
-        geometry: { coordinates: mark.coordinates },
-        properties: { name: 'Point of issue of orders', workload: mark.workload }
+        geometry: { coordinates: [mark.position.longitude, mark.position.latitude] },
+        properties: { name: 'Point of issue of orders'}
     }));
 
-    const clusterer = new YMapClusterer({
+    clusterer = new YMapClusterer({
         method: clusterByGrid({ gridSize: 64 }),
         features: points,
         marker,
@@ -200,9 +156,17 @@ const createCluster = (marks) => {
     });
 
     map.addChild(clusterer);
+    setTimeout(() => {
+        
+    }, 1500);
 }
 
-
+watch(() => props.offices,
+    () => {
+        createCluster(props.offices)
+    },
+    {deep: true}
+)
 </script>
 
 <template>

@@ -3,7 +3,7 @@ import DepartamentsList from '@/components/DepartamentsList.vue';
 import TheFilter from '@/components/TheFilter.vue';
 import DeparnamentInfo from '@/components/DeparnamentInfo.vue';
 import TheMap from '@/components/TheMap.vue';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 let filterIsActive = ref(false)
 let infoIsActive = ref(false)
@@ -16,6 +16,29 @@ const openInfoDeportament = () => {
 const openContentFull = () => {
   openFullContent.value = !openFullContent.value
 }
+
+const offices = ref([])
+const getOffice = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/atm', {
+      method: 'GET'
+    });
+
+      const data = await response.json()
+      offices.value = data
+
+  } catch (err) {
+    console.error('Произошла ошибка:', err)
+  }
+};
+
+
+const mapInit = () => {
+  getOffice();
+}
+
+onMounted(() => {
+})
 </script>
 
 <template>
@@ -122,7 +145,10 @@ const openContentFull = () => {
         />
       </div>
     </div>
-    <the-map/>
+    <the-map
+      :offices="offices"
+      @mapInit="mapInit()"
+    />
   </div>
 </template>
 

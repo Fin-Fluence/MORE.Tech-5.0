@@ -26,7 +26,7 @@ func NewATM(service service.ATM) *ATM {
 //	@Failure		500	{object}	JSONError
 //	@Router			/atm [get]
 func (a *ATM) GetAll(w http.ResponseWriter, r *http.Request) {
-	atms, err := a.service.GetAll()
+	atms, err := a.service.GetCache()
 	if err != nil {
 		InternalServerError(w)
 		return

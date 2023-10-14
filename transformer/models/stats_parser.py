@@ -4,7 +4,7 @@ from .base.base_parser import BaseParser
 # Класс для сбора статистики полей данных json
 class StatsParser(BaseParser):
   def __init__(self):
-    super().__init__('transformer/data/basic_data/', 'transformer/data/results/stats/')
+    super().__init__('data/basic_data/', 'data/results/stats/')
 
   def get_field_uniqs(self, data, field):
     uniq_counter = {'NONE': 0}

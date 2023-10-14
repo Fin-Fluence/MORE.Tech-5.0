@@ -3,87 +3,201 @@ import * as ymaps3 from 'ymaps3';
 import markImage from '@/assets/images/icons/mark.svg';
 import { ref } from 'vue';
 
-console.log()
+const coordinates = ref([
+    [37.64, 55.76],
+]);
+
+const coordinates2 = ref([
+    [37.94, 55.76],
+    [37.74, 55.76],
+]);
+const userCoordinates = ref(null)
+
+async function getUserCoordinates() {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                userCoordinates.value = [longitude, latitude];
+                console.log('Получены координаты пользователя:', userCoordinates.value);
+                resolve();
+            },
+            (error) => {
+                console.error('Ошибка получения координат пользователя:', error);
+                reject(error);
+            }
+        );
+    });
+}
+function circle(count) {
+    const circle = document.createElement('div');
+    circle.classList.add('circle');
+    circle.innerHTML = `
+            <div class="circle-content">
+                <span class="circle-text">${count}</span>
+            </div>
+        `;
+    return circle;
+}
+
+// Вызовите функцию, чтобы начать получать координаты пользователя
+let map = null
+let YMap = null;
+let YMapDefaultSchemeLayer = null;
+let YMapDefaultFeaturesLayer = null;
+let YMapMarker = null;
+let YMapFeatureDataSource = null;
+let YMapLayer = null;
+let YMapControls = null;
+let YMapClusterer = null;
+let clusterByGrid = null;
+let YMapGeolocationControl = null;
 initMap();
-
 async function initMap() {
-    await ymaps3.ready;
+    try {
+        await getUserCoordinates();
+        await ymaps3.ready;
 
-    const {YMap, YMapDefaultSchemeLayer, YMapDefaultFeaturesLayer, YMapMarker} = ymaps3;
+        YMap = ymaps3.YMap;
+        YMapDefaultSchemeLayer = ymaps3.YMapDefaultSchemeLayer;
+        YMapDefaultFeaturesLayer = ymaps3.YMapDefaultFeaturesLayer;
+        YMapMarker = ymaps3.YMapMarker;
+        YMapFeatureDataSource = ymaps3.YMapFeatureDataSource;
+        YMapLayer = ymaps3.YMapLayer;
+        YMapControls = ymaps3.YMapControls;
 
-    // Координаты центра карты
-    const CENTER_COORDINATES = [37.623082, 55.752540];
-    const LOCATION = {center: CENTER_COORDINATES, zoom: 9};
+        YMapClusterer = await ymaps3.import('@yandex/ymaps3-clusterer@0.0.1');
+        clusterByGrid = YMapClusterer.clusterByGrid;
+        YMapClusterer = YMapClusterer.YMapClusterer;
 
-    const map = new YMap(document.getElementById('map'), {location: LOCATION});
+        const controlsPackage = await ymaps3.import('@yandex/ymaps3-controls@0.0.1');
+        YMapGeolocationControl = controlsPackage.YMapGeolocationControl;
 
-    const content = document.createElement('div');
-    content.innerHTML = '<div>Тут может быть все что угодно</div>';
-        
-    // Добавляем слой для отображения схематической карты
-    map.addChild(new YMapDefaultSchemeLayer())
-    map.addChild(new YMapDefaultFeaturesLayer())
+        // Координаты центра карты
+        const CENTER_COORDINATES = userCoordinates.value;
+        const LOCATION = {center: CENTER_COORDINATES, zoom: 9};
 
-    const marks = ref([
-        {
-            coordinates: [37.623082, 55.752540],
-            desc: 'test test test test test test test test',
+        const controls = new YMapControls({position: 'right'});
+        const geolocationControl = new YMapGeolocationControl();
+        controls.addChild(geolocationControl);
+
+
+
+        map = new YMap(document.getElementById('map'), {location: LOCATION});
+        map.addChild(new YMapDefaultSchemeLayer())
+        .addChild(new YMapDefaultFeaturesLayer())
+        .addChild(new YMapFeatureDataSource({id: 'my-source'}))
+        .addChild(new YMapLayer({source: 'my-source', type: 'markers', zIndex: 1800}))
+        .addChild(controls);
+
+
+
+        const contentPin = document.createElement('div');
+        contentPin.classList.add('mark')
+        contentPin.innerHTML = `<img src=${markImage}>`;
+
+
+
+
+        // user
+        const content = document.createElement('section');
+        content.innerHTML = `<div class="me"></div>`;
+        const userMark = new YMapMarker({       
+            coordinates: userCoordinates.value,
+            draggable: false
         },
-        {
-            coordinates: [38.623082, 55.752540],
-            desc: 'test test test test test test test test',
-        },
-        {
-            coordinates: [39.623082, 55.752540],
-            desc: 'test test test test test test test test',
-        },
-        {
-            coordinates: [40.623082, 55.752540],
-            desc: 'test test test test test test test test',
-        },
-        {
-            coordinates: [41.623082, 55.752540],
-            desc: 'test test test test test test test test',
-        },
-    ])
-    marks.value.forEach(mark => {
-        // Создание маркера
-        const el = document.createElement('img');
-        el.className = 'marker';
-        el.src = markImage;
-        el.title = 'Маркер';
+            content
+        );
+        map.addChild(userMark);
+    } catch (err) {
+        console.log(err)
+    }
+}
 
-        el.onclick = () => {console.log('test')}
+const createCluster = (coordinates) => {
+    console.log(coordinates)
+    const contentPin = document.createElement('div');
+    contentPin.classList.add('mark');
+    contentPin.innerHTML = `<img src=${markImage}>`;
 
-        // Создание заголовка маркера
-        const markerTitle = document.createElement('div');
-        markerTitle.className = 'marker-title';
+    const marker = (feature) =>
+        new ymaps3.YMapMarker({
+            coordinates: feature.geometry.coordinates,
+            source: 'my-source'
+        },
+        contentPin.cloneNode(true)
+    );
 
-        // Контейнер для элементов маркера
-        const imgContainer = document.createElement('div');
-        imgContainer.appendChild(el);
-        imgContainer.appendChild(markerTitle);
-        const MARKER_COORDINATES = mark.coordinates
-        
-        // Добавление маркера на карту
-        map.addChild(new YMapMarker({coordinates: MARKER_COORDINATES}, imgContainer));
+    const cluster = (coordinates, features) =>
+        new ymaps3.YMapMarker({
+            coordinates,
+            source: 'my-source'
+        },
+        circle(features.length).cloneNode(true)
+    );
+
+    const points = coordinates.map((lnglat, i) => ({
+        type: 'Feature',
+        id: i,
+        geometry: { coordinates: lnglat },
+        properties: { name: 'Point of issue of orders' }
+    }));
+
+    const clusterer = new YMapClusterer({
+        method: clusterByGrid({ gridSize: 64 }),
+        features: points,
+        marker,
+        cluster
     });
 
-
-
-
+    map.addChild(clusterer);
+    map.update()
 }
+
+setTimeout(() => {
+    createCluster(coordinates.value)
+}, 1000);
+
+setTimeout(() => {
+    createCluster(coordinates2.value)
+}, 2000);
+
+
 
 </script>
 
 <template>
-  <div id="map"></div>
+    <div id="map"></div>
 </template>
 
 
 <style lang="scss">
 #map {
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - 71px);
+}
+.me {
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+    background-color: rgb(13, 105, 242);
+    border-radius: 50%;
+    border: 2px solid rgb(255, 255, 255);
+    -webkit-box-shadow: 0px 0px 20px 20px rgba(34, 60, 80, 0.4);
+    -moz-box-shadow: 0px 0px 20px 20px rgba(34, 60, 80, 0.2);
+    box-shadow: 0px 0px 20px 20px rgba(34, 60, 80, 0.2);
+    transform: translate(-50%, -50%);
+}
+
+.circle {
+    background: #fff;
+    border: 2px solid blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
 }
 </style>

@@ -13,12 +13,13 @@ class OfficeServiceGenerator:
       self.generate_one(name)
 
   def generate_one(self, name):
+    cur_ticker = random.randint(0, 990)
     os = OfficeService.create(
       name=name,
       capability=random.choice(self.bool_variants),
       activity=random.choice(self.bool_variants),
-      current_ticket=random.randint(0, 999),
-      last_ticket=random.randint(0, 999),
+      current_ticket='AA' + format(str(cur_ticker), '*>3s'),
+      last_ticket='AA' + format(str(cur_ticker + random.randint(0, 4)), '*>3s'),
       office=self.office
     )
 

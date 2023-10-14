@@ -18,7 +18,7 @@ class Serilizer:
     Service.delete().execute()
     OpenHours.delete().execute()
     Position.delete().execute()
-    # OfficeService.delete().execute()
+    OfficeService.delete().execute()
 
   @staticmethod
   def create_atm(json):

@@ -41,11 +41,7 @@ func (a *ATM) Get(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	atms, err := a.service.Get(filter)
-	if err != nil {
-		InternalServerError(w)
-		return
-	}
+	atms := a.service.Get(filter)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)

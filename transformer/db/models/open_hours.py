@@ -10,7 +10,7 @@ class OpenHours(BaseModel):
   day = CharField(max_length=50)
   hours = CharField(max_length=50)
   is_individual = BooleanField(default=False)
-  office = ForeignKeyField(Office, backref='open_hours')
+  office = ForeignKeyField(Office, backref='open_hours', on_delete='CASCADE')
 
   class Meta:
     table_name = 'open_hours'

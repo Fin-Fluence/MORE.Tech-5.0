@@ -10,4 +10,4 @@ class Service(BaseModel):
   name = CharField(max_length=512)
   capability = BooleanField(null=True)
   activity = BooleanField(null=True)
-  atm = ForeignKeyField(Atm, backref='atms')
+  atm = ForeignKeyField(Atm, backref='atms', on_delete='CASCADE')

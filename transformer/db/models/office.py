@@ -18,4 +18,4 @@ class Office(BaseModel):
   distance = IntegerField()
   kep = BooleanField(null=True)
   my_branch = BooleanField()
-  position = ForeignKeyField(Position, related_name='position')
+  position = ForeignKeyField(Position, related_name='position', on_delete='CASCADE')

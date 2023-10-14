@@ -12,4 +12,4 @@ class OfficeService(BaseModel):
   activity = BooleanField(null=True)
   current_ticket = CharField(max_length=8)
   last_ticket = CharField(max_length=8)
-  office = ForeignKeyField(Office, backref='office_services')
+  office = ForeignKeyField(Office, backref='office_services', on_delete='CASCADE')

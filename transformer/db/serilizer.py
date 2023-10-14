@@ -11,12 +11,12 @@ class Serilizer:
   
   @staticmethod
   def delete():
-    Position.delete().execute()
     Atm.delete().execute()
+    Office.delete().execute()
     Service.delete().execute()
     OpenHours.delete().execute()
-    Office.delete().execute()
-    OfficeService.delete().execute()
+    Position.delete().execute()
+    # OfficeService.delete().execute()
 
   def create_atm(json):
     position = Position.create(

@@ -26,7 +26,16 @@ const docTemplate = `{
                 "tags": [
                     "ATMs"
                 ],
-                "summary": "Get all ATMs",
+                "summary": "Get ATMs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "entity.FilterATM",
+                        "description": "Filter",
+                        "name": "filter",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -57,7 +66,16 @@ const docTemplate = `{
                 "tags": [
                     "Offices"
                 ],
-                "summary": "Get all offices",
+                "summary": "Get offices",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "entity.FilterOffice",
+                        "description": "Filter",
+                        "name": "filter",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -195,6 +213,9 @@ const docTemplate = `{
                 },
                 "hours": {
                     "type": "string"
+                },
+                "is_individual": {
+                    "type": "boolean"
                 }
             }
         },

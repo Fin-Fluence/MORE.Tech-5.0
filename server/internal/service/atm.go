@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"slices"
 
 	"github.com/MORE.Tech-5.0/server/internal/entity"
 	"github.com/MORE.Tech-5.0/server/internal/repo"
@@ -10,6 +11,7 @@ import (
 type ATMRepos struct {
 	ATM     repo.ATM
 	Service repo.Service
+	Cache   *repo.ATMCache
 }
 
 type atm struct {
@@ -17,7 +19,10 @@ type atm struct {
 }
 
 func NewATM(repos ATMRepos) *atm {
-	return &atm{repos}
+	a := &atm{repos}
+	atms, _ := a.GetAll()
+	a.repos.Cache.Set(atms)
+	return a
 }
 
 func (a *atm) GetAll() ([]entity.ATM, error) {
@@ -35,4 +40,49 @@ func (a *atm) GetAll() ([]entity.ATM, error) {
 	}
 
 	return atms, nil
+}
+
+func (a *atm) GetCache() ([]entity.ATM, error) {
+	return a.repos.Cache.GetAll(context.Background())
+}
+
+func (a *atm) Get(filter entity.FilterATM) ([]entity.ATM, error) {
+	return a.Filter(filter)
+}
+
+func (a *atm) Filter(filter entity.FilterATM) ([]entity.ATM, error) {
+	filteredATMs := make([]entity.ATM, 0)
+
+	atms, _ := a.GetCache()
+
+	for _, atm := range atms {
+		if filter.AllDay != nil && atm.AllDay != *filter.AllDay {
+			continue
+		}
+
+		if filter.Position != nil {
+			if filter.Position.MetroStation != nil && (atm.Position.MetroStation == nil || *atm.Position.MetroStation != *filter.Position.MetroStation) {
+				continue
+			}
+		}
+
+		if names := filter.ServiceNames; names != nil {
+			var contains bool
+			for _, name := range names {
+				contains = slices.ContainsFunc(atm.Services, func(os entity.Service) bool {
+					return os.Name == name
+				})
+				if !contains {
+					break
+				}
+			}
+			if !contains {
+				continue
+			}
+		}
+
+		filteredATMs = append(filteredATMs, atm)
+	}
+
+	return filteredATMs, nil
 }

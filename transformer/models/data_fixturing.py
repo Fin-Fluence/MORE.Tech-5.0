@@ -4,7 +4,7 @@ from .base.base_parser import BaseParser
 
 class DataFixturing(BaseParser):
   def __init__(self):
-    super().__init__('transformer/data/results/formatted/', '')
+    super().__init__('data/results/formatted/', '')
 
   def perform(self):
     Serilizer.delete()

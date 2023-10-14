@@ -5,6 +5,8 @@ from .models.open_hours import OpenHours
 from .models.office import Office
 from .models.office_service import OfficeService
 
+from .generators.office_service import OfficeServiceGenerator
+
 class Serilizer:
   def __init__(self):
     pass
@@ -18,20 +20,19 @@ class Serilizer:
     Position.delete().execute()
     # OfficeService.delete().execute()
 
+  @staticmethod
   def create_atm(json):
     position = Position.create(
       latitude=json.get('latitude', 0),
       longitude=json.get('longitude', 0),
       metro_station=json.get('metroStation', None)
     )
-    position.save()
 
     atm = Atm.create(
       address=json['address'],
       position=position,
       all_day=json.get('allDay', 'false'),
     )
-    atm.save()
 
     for ser_name in json['services'].keys():
       # puts ser_name 
@@ -42,7 +43,6 @@ class Serilizer:
         activity=ser_json.get('activity', None),
         atm=atm
       )
-      service.save()
     
     return atm
 
@@ -53,7 +53,6 @@ class Serilizer:
       longitude=json.get('longitude', 0),
       metro_station=json.get('metroStation', None)
     )
-    position.save()
 
     office = Office.create(
       sale_point_name=json.get('salePointName', 'Нет данных'),
@@ -70,8 +69,6 @@ class Serilizer:
       position=position
     )
 
-    office.save()
-
     for hours in json.get("openHours", []):
       hours_data = hours.get('hours', 'Нет данных')
       if not hours_data:
@@ -81,7 +78,6 @@ class Serilizer:
         hours=hours_data,
         office=office
       )
-      open_hours.save
 
     for hours in json.get("openHoursIndividual", []):
       hours_data = hours.get('hours', 'Нет данных')
@@ -93,6 +89,7 @@ class Serilizer:
         is_individual=True,
         office=office
       )
-      open_hours_ind.save
+
+    # OfficeServiceGenerator(office).generate_all()
 
     return office

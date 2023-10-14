@@ -3,20 +3,23 @@ from ..models.office_service import OfficeService
 import random
 
 class OfficeServiceGenerator:
-  def __init__(self):
-    self.model = OfficeService
-    self.names = ['Test1', 'Test2']
+  def __init__(self, office, names=['Test1', 'Test2']):
+    self.names = names
     self.bool_variants = [True, False]
+    self.office = office
 
-  def generate_one(self, office):
-    return 
+  def generate_all(self):
+    for name in self.names:
+      self.generate_one(name)
+
+  def generate_one(self, name):
     os = OfficeService.create(
-      name=random.choice(self.names),
+      name=name,
       capability=random.choice(self.bool_variants),
       activity=random.choice(self.bool_variants),
-      current_ticker=random.choice(self.bool_variants),
-      last_ticker=random.choice(self.bool_variants),
-      office=office
+      current_ticker=random.randint(0, 999),
+      last_ticker=random.randint(0, 999),
+      office=self.office
     )
 
     return os

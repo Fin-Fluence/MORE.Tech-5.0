@@ -18,12 +18,10 @@ func Router(services Services) *chi.Mux {
 
 	mux.Route("/", func(r chi.Router) {
 		r.Route("/office", func(r chi.Router) {
-			r.Get("/", office.GetAll)
-			r.Post("/", office.Get)
+			r.Get("/", office.Get)
 		})
 		r.Route("/atm", func(r chi.Router) {
-			r.Get("/", atm.GetAll)
-			r.Post("/", atm.Get)
+			r.Get("/", atm.Get)
 		})
 	})
 

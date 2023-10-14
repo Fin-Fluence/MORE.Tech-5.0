@@ -76,6 +76,8 @@ definitions:
         type: string
       hours:
         type: string
+      is_individual:
+        type: boolean
     type: object
   entity.Position:
     properties:
@@ -114,6 +116,12 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Filter
+        format: entity.FilterATM
+        in: query
+        name: filter
+        type: string
       produces:
       - application/json
       responses:
@@ -127,13 +135,19 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/http.JSONError'
-      summary: Get all ATMs
+      summary: Get ATMs
       tags:
       - ATMs
   /office:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Filter
+        format: entity.FilterOffice
+        in: query
+        name: filter
+        type: string
       produces:
       - application/json
       responses:
@@ -147,7 +161,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/http.JSONError'
-      summary: Get all offices
+      summary: Get offices
       tags:
       - Offices
 swagger: "2.0"

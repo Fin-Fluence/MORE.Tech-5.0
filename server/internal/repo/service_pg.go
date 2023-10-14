@@ -37,7 +37,7 @@ func NewOfficeServicePostgres(pg *postgres.Postgres) *OfficeServicePostgres {
 }
 
 func (s *OfficeServicePostgres) GetByOfficeId(ctx context.Context, officeID uuid.UUID) ([]entity.OfficeService, error) {
-	const query = `SELECT id, name, capability, activity, current_ticket, last_ticket FROM service WHERE office_id = $1`
+	const query = `SELECT id, name, capability, activity, current_ticket, last_ticket FROM office_service WHERE office_id = $1`
 
 	rows, err := s.Pool.Query(ctx, query, officeID)
 	if err != nil {

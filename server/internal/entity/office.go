@@ -19,4 +19,5 @@ type Office struct {
 	KEP                 *bool           `json:"kep"`
 	MyBranch            bool            `json:"my_branch"`
 	Services            []OfficeService `json:"services"`
+	Load                int             `json:"load"`
 }

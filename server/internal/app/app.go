@@ -25,8 +25,11 @@ func Run(cfg *Config, logger log.Logger) error {
 	atmRepo := repo.NewATMPostgres(postgres)
 	asRepo := repo.NewServicePostgres(postgres)
 
-	office := service.NewOffice(service.OfficeRepos{officeRepo, ohRepo, osRepo})
-	atm := service.NewATM(service.ATMRepos{atmRepo, asRepo})
+	officeCache := repo.NewOfficeCache()
+	atmCache := repo.NewATMCache()
+
+	office := service.NewOffice(service.OfficeRepos{officeRepo, ohRepo, osRepo, officeCache})
+	atm := service.NewATM(service.ATMRepos{atmRepo, asRepo, atmCache})
 
 	server := http.NewServer(logger, http.Services{office, atm}, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),

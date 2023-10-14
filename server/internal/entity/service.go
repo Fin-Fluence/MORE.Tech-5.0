@@ -10,7 +10,10 @@ type Service struct {
 }
 
 type OfficeService struct {
-	*Service
-	CurrentTicket string `json:"current_ticket"`
-	LastTicket    string `json:"last_ticket"`
+	ID            uuid.UUID `json:"id"`
+	Name          string    `json:"name"`
+	Capability    bool      `json:"capability"`
+	Activity      bool      `json:"activity"`
+	CurrentTicket string    `json:"current_ticket"`
+	LastTicket    string    `json:"last_ticket"`
 }

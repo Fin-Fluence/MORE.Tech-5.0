@@ -3,7 +3,6 @@ package http
 import (
 	"net/http"
 
-	"github.com/MORE.Tech-5.0/server/internal/service"
 	"github.com/MORE.Tech-5.0/server/pkg/log"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -15,7 +14,7 @@ type ServerOptions struct {
 	Origins []string
 }
 
-func NewServer(logger log.Logger, opts ServerOptions, officeService service.Office) *http.Server {
+func NewServer(logger log.Logger, services Services, opts ServerOptions) *http.Server {
 	mux := chi.NewMux()
 	c := cors.New(cors.Options{
 		AllowedOrigins:   opts.Origins,
@@ -33,7 +32,7 @@ func NewServer(logger log.Logger, opts ServerOptions, officeService service.Offi
 	mux.NotFound(NotFound)
 	mux.MethodNotAllowed(MethodNotAllowed)
 
-	mux.Mount("/", Router(officeService))
+	mux.Mount("/", Router(services))
 
 	return &http.Server{
 		Addr:    opts.Addr,

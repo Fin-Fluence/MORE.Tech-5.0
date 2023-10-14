@@ -22,13 +22,16 @@ func Run(cfg *Config, logger log.Logger) error {
 	officeRepo := repo.NewOfficePostgres(postgres)
 	ohRepo := repo.NewOpenHoursPostgres(postgres)
 	osRepo := repo.NewOfficeServicePostgres(postgres)
+	atmRepo := repo.NewATMPostgres(postgres)
+	asRepo := repo.NewServicePostgres(postgres)
 
 	office := service.NewOffice(service.OfficeRepos{officeRepo, ohRepo, osRepo})
+	atm := service.NewATM(service.ATMRepos{atmRepo, asRepo})
 
-	server := http.NewServer(logger, http.ServerOptions{
+	server := http.NewServer(logger, http.Services{office, atm}, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),
 		Origins: cfg.HTTP.Origins,
-	}, office)
+	})
 
 	logger.Info("server created with address " + server.Addr)
 	return fmt.Errorf("server down: %w", server.ListenAndServe())

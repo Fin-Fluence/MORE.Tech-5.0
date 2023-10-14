@@ -42,3 +42,5 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      POSTGRES_URI: postgres://postgres:test@db:5432/postgres?search_path=app

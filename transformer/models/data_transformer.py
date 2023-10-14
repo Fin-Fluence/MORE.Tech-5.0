@@ -28,9 +28,9 @@ class DataTransformer(BaseParser):
         for key in keys_to_change:
           val = el[key]
           if val == fields[key][0]:
-            el[key] = 'true'
+            el[key] = True
           elif val == fields[key][1]:
-            el[key] = 'false'
+            el[key] = False
           else:
             el[key] = 'null'
     elif type(data) is dict:
@@ -39,9 +39,9 @@ class DataTransformer(BaseParser):
         for key in keys_to_change:
           val = el[key]
           if val == fields[key][0]:
-            el[key] = 'true'
+            el[key] = True
           elif val == fields[key][1]:
-            el[key] = 'false'
+            el[key] = False
           else:
             el[key] = 'null'
 
@@ -54,9 +54,9 @@ class DataTransformer(BaseParser):
       for key in keys_to_change:
         val = el[key]
         if val == fields[key][0]:
-          el[key] = 'true'
+          el[key] = True
         elif val == fields[key][1]:
-          el[key] = 'false'
+          el[key] = False
         else:
           el[key] = 'null'
 

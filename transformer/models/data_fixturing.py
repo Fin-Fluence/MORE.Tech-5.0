@@ -11,5 +11,9 @@ class DataFixturing(BaseParser):
     for entry in data:
       print(Serilizer.create_atm(entry))
 
+    data = self.load_data('offices.json')
+    for entry in data:
+      print(Serilizer.create_office(entry))
+
   def save(self):
     pass

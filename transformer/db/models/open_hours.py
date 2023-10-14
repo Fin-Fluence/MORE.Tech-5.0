@@ -11,3 +11,6 @@ class OpenHours(BaseModel):
   hours = CharField(max_length=50)
   is_individual = BooleanField(default=False)
   office = ForeignKeyField(Office, backref='open_hours')
+
+  class Meta:
+    table_name = 'open_hours'

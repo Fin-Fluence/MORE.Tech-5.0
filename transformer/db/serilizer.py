@@ -26,7 +26,8 @@ class Serilizer:
     atm.save()
 
     for ser_name in json['services'].keys():
-      ser_json = json['ser_name']
+      # puts ser_name 
+      ser_json = json['services'][ser_name]
       service = Service.create(
         name=ser_name,
         capability=ser_json.get('capability', None),
@@ -58,22 +59,29 @@ class Serilizer:
       kep=json.get('kep', False),
       my_branch=json.get('myBranch', False),
       type=json.get('type', 'Нет данных'),
+      position=position
     )
 
     office.save()
 
     for hours in json.get("openHours", []):
+      hours_data = hours.get('hours', 'Нет данных')
+      if not hours_data:
+        hours_data = 'Нет данных'
       open_hours = OpenHours.create(
-        days=hours.get('days', ''),
-        hours=hours.get('hours', ''),
+        day=hours.get('days', 'Нет данных'),
+        hours=hours_data,
         office=office
       )
       open_hours.save
 
     for hours in json.get("openHoursIndividual", []):
+      hours_data = hours.get('hours', 'Нет данных')
+      if not hours_data:
+        hours_data = 'Нет данных'
       open_hours_ind = OpenHours.create(
-        days=hours.get('days', 'Нет данных'),
-        hours=hours.get('hours', 'Нет данных'),
+        day=hours.get('days', 'Нет данных'),
+        hours=hours_data,
         is_individual=True,
         office=office
       )

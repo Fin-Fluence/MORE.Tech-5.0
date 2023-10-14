@@ -1,0 +1,236 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a MORE.Tech 5.0 server",
+        "title": "MORE.Tech 5.0 API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/atm": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ATMs"
+                ],
+                "summary": "Get all ATMs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.ATM"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.JSONError"
+                        }
+                    }
+                }
+            }
+        },
+        "/office": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Offices"
+                ],
+                "summary": "Get all offices",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Office"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/http.JSONError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "entity.ATM": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "all_day": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "position": {
+                    "$ref": "#/definitions/entity.Position"
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Service"
+                    }
+                }
+            }
+        },
+        "entity.Office": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "distance": {
+                    "type": "integer"
+                },
+                "has_ramp": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "kep": {
+                    "type": "boolean"
+                },
+                "my_branch": {
+                    "type": "boolean"
+                },
+                "open_hours": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.OpenHours"
+                    }
+                },
+                "open_hours_individual": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.OpenHours"
+                    }
+                },
+                "position": {
+                    "$ref": "#/definitions/entity.Position"
+                },
+                "rko": {
+                    "type": "boolean"
+                },
+                "sale_point_format": {
+                    "type": "string"
+                },
+                "sale_point_name": {
+                    "type": "string"
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.OfficeService"
+                    }
+                },
+                "status": {
+                    "type": "string"
+                },
+                "suo_availability": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.OfficeService": {
+            "type": "object",
+            "properties": {
+                "activity": {
+                    "type": "boolean"
+                },
+                "capability": {
+                    "type": "boolean"
+                },
+                "current_ticket": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_ticket": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.OpenHours": {
+            "type": "object",
+            "properties": {
+                "day": {
+                    "type": "string"
+                },
+                "hours": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Position": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "metro_station": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Service": {
+            "type": "object",
+            "properties": {
+                "activity": {
+                    "type": "boolean"
+                },
+                "capability": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "http.JSONError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -90,6 +90,6 @@ class Serilizer:
         office=office
       )
 
-    # OfficeServiceGenerator(office).generate_all()
+    OfficeServiceGenerator(office).generate_all()
 
     return office

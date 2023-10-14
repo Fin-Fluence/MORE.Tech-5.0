@@ -17,8 +17,8 @@ class OfficeServiceGenerator:
       name=name,
       capability=random.choice(self.bool_variants),
       activity=random.choice(self.bool_variants),
-      current_ticker=random.randint(0, 999),
-      last_ticker=random.randint(0, 999),
+      current_ticket=random.randint(0, 999),
+      last_ticket=random.randint(0, 999),
       office=self.office
     )
 

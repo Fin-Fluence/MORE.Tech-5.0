@@ -13,3 +13,6 @@ class OfficeService(BaseModel):
   current_ticket = CharField(max_length=8)
   last_ticket = CharField(max_length=8)
   office = ForeignKeyField(Office, backref='office_services', on_delete='CASCADE')
+
+  class Meta:
+    table_name = 'office_service'

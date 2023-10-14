@@ -3,8 +3,8 @@ services:
     container_name: app-server
     build: server
     depends_on:
-      db:
-        condition: service_healthy
+      transformer:
+        condition: service_completed_successfully
     ports:
       - 3000:3000
     env_file:
@@ -35,3 +35,10 @@ services:
         condition: service_started
     ports:
       - 5000:80
+  
+  transformer:
+    container_name: app-transformer
+    build: transformer
+    depends_on:
+      db:
+        condition: service_healthy

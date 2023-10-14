@@ -26,7 +26,7 @@ func NewOffice(service service.Office) *Office {
 //	@Failure		500	{object}	JSONError
 //	@Router			/office [get]
 func (o *Office) GetAll(w http.ResponseWriter, r *http.Request) {
-	offices, err := o.service.GetAll()
+	offices, err := o.service.GetCache()
 	if err != nil {
 		InternalServerError(w)
 		return

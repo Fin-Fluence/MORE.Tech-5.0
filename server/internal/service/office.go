@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"slices"
 
 	"github.com/MORE.Tech-5.0/server/internal/entity"
@@ -21,7 +22,8 @@ type office struct {
 
 func NewOffice(repos OfficeRepos) *office {
 	o := &office{repos}
-	offices, _ := o.GetAll()
+	offices, err := o.GetAll()
+	fmt.Println(err)
 	o.repos.Cache.Set(offices)
 	return o
 }

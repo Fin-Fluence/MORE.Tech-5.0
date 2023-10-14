@@ -15,10 +15,13 @@ func Run(cfg *Config, logger log.Logger) error {
 		return err
 	}
 	defer postgres.Close()
+	logger.Info("database connection established")
 
 	server := http.NewServer(logger, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),
 		Origins: cfg.HTTP.Origins,
 	})
-	return server.ListenAndServe()
+
+	logger.Info("server created with address " + server.Addr)
+	return fmt.Errorf("server down: %w", server.ListenAndServe())
 }

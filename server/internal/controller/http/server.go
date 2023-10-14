@@ -5,6 +5,7 @@ import (
 
 	"github.com/MORE.Tech-5.0/server/pkg/log"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
 )
 
@@ -22,7 +23,16 @@ func NewServer(logger log.Logger, opts ServerOptions) *http.Server {
 		AllowCredentials: true,
 	})
 
+	mux.Use(middleware.RealIP)
+	mux.Use(LoggerMiddleware(logger))
+	mux.Use(RecovererMiddleware(logger))
 	mux.Use(c.Handler)
+	mux.Use(ContentTypeMiddleware("application/json"))
+
+	mux.NotFound(NotFound)
+	mux.MethodNotAllowed(MethodNotAllowed)
+
+	mux.Mount("/", Router())
 
 	return &http.Server{
 		Addr:    opts.Addr,

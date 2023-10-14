@@ -1,23 +1,34 @@
 <script setup>
 import TheDepartament from './TheDepartament.vue';
 
-import { defineEmits } from 'vue';
+import { defineEmits, defineProps } from 'vue';
 
 const emit = defineEmits(['openInfoDepartament'])
 
 const openInfoDepartament = () => {
     emit('openInfoDepartament')
 }
+
+const props = defineProps({
+    departaments: {
+        type: Array,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    }
+})
 </script>
 
 <template>
     <div class="departaments">
         <div class="departaments__subtitle">
-          Отделения в радиусе 3 км:
+            {{ props.title }}
         </div>
         <the-departament
-            v-for="(departament, index) in [1,2,3]" :key="index"
-            :workLoad="index"
+            v-for="(departament, index) in [1,2]" :key="index"
+            :departament="departament"
             @openInfoDepartament="openInfoDepartament()"
         />
     </div>
@@ -26,6 +37,7 @@ const openInfoDepartament = () => {
 <style lang="scss" scoped>
 .departaments {
     padding-right: 2px;
+    padding-bottom: 10px;
     &__subtitle {
         color: var(--absolute-input-gray, #ACB6C3);
         font-family: Inter;

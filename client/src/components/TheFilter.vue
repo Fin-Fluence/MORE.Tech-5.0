@@ -204,6 +204,14 @@ const closeFilter = () => {
                     <span class="slider round"></span>
                 </label>
             </div>
+            <div class="filter__btns">
+                <button class="filter__btn btn btn_blue">
+                    Применить
+                </button>
+                <button class="filter__btn btn">
+                    Отмена
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -349,6 +357,17 @@ const closeFilter = () => {
         display: flex;
         gap: 15px;
         flex-wrap: wrap;
+    }
+    &__btns {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        & .btn {
+            flex: 0 0 126px;
+        }
+        & .btn_blue {
+            flex: 1 ;
+        }
     }
 }
 

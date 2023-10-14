@@ -1,0 +1,167 @@
+definitions:
+  entity.ATM:
+    properties:
+      address:
+        type: string
+      all_day:
+        type: boolean
+      id:
+        type: string
+      position:
+        $ref: '#/definitions/entity.Position'
+      services:
+        items:
+          $ref: '#/definitions/entity.Service'
+        type: array
+    type: object
+  entity.Office:
+    properties:
+      address:
+        type: string
+      distance:
+        type: integer
+      has_ramp:
+        type: boolean
+      id:
+        type: string
+      kep:
+        type: boolean
+      my_branch:
+        type: boolean
+      open_hours:
+        items:
+          $ref: '#/definitions/entity.OpenHours'
+        type: array
+      open_hours_individual:
+        items:
+          $ref: '#/definitions/entity.OpenHours'
+        type: array
+      position:
+        $ref: '#/definitions/entity.Position'
+      rko:
+        type: boolean
+      sale_point_format:
+        type: string
+      sale_point_name:
+        type: string
+      services:
+        items:
+          $ref: '#/definitions/entity.OfficeService'
+        type: array
+      status:
+        type: string
+      suo_availability:
+        type: boolean
+      type:
+        type: string
+    type: object
+  entity.OfficeService:
+    properties:
+      activity:
+        type: boolean
+      capability:
+        type: boolean
+      current_ticket:
+        type: string
+      id:
+        type: string
+      last_ticket:
+        type: string
+      name:
+        type: string
+    type: object
+  entity.OpenHours:
+    properties:
+      day:
+        type: string
+      hours:
+        type: string
+      is_individual:
+        type: boolean
+    type: object
+  entity.Position:
+    properties:
+      latitude:
+        type: number
+      longitude:
+        type: number
+      metro_station:
+        type: string
+    type: object
+  entity.Service:
+    properties:
+      activity:
+        type: boolean
+      capability:
+        type: boolean
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  http.JSONError:
+    properties:
+      error:
+        type: string
+      status:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is a MORE.Tech 5.0 server
+  title: MORE.Tech 5.0 API
+  version: "1.0"
+paths:
+  /atm:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Filter
+        format: entity.FilterATM
+        in: query
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.ATM'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.JSONError'
+      summary: Get ATMs
+      tags:
+      - ATMs
+  /office:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Filter
+        format: entity.FilterOffice
+        in: query
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Office'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/http.JSONError'
+      summary: Get offices
+      tags:
+      - Offices
+swagger: "2.0"

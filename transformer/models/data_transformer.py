@@ -4,7 +4,7 @@ from .base.base_parser import BaseParser
 # Класс для преобразования данных json в более удобный формат работы
 class DataTransformer(BaseParser):
   def __init__(self):
-    super().__init__('data/basic_data/', 'data/results/formatted/')
+    super().__init__('transformer/data/basic_data/', 'transformer/data/results/formatted/')
 
   def change_fields(self, data, fields_change):
     if type(data) is list:
@@ -28,9 +28,9 @@ class DataTransformer(BaseParser):
         for key in keys_to_change:
           val = el[key]
           if val == fields[key][0]:
-            el[key] = 'true'
+            el[key] = True
           elif val == fields[key][1]:
-            el[key] = 'false'
+            el[key] = False
           else:
             el[key] = 'null'
     elif type(data) is dict:
@@ -39,9 +39,9 @@ class DataTransformer(BaseParser):
         for key in keys_to_change:
           val = el[key]
           if val == fields[key][0]:
-            el[key] = 'true'
+            el[key] = True
           elif val == fields[key][1]:
-            el[key] = 'false'
+            el[key] = False
           else:
             el[key] = 'null'
 
@@ -54,9 +54,9 @@ class DataTransformer(BaseParser):
       for key in keys_to_change:
         val = el[key]
         if val == fields[key][0]:
-          el[key] = 'true'
+          el[key] = True
         elif val == fields[key][1]:
-          el[key] = 'false'
+          el[key] = False
         else:
           el[key] = 'null'
 

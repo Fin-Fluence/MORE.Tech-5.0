@@ -7,6 +7,6 @@ import uuid
 
 class Atm(BaseModel):
   id = UUIDField(primary_key=True, default=uuid.uuid4)
-  capability = BooleanField(null=True)
-  activity = BooleanField(null=True)
-  position = ForeignKeyField(Position, backref='position')
+  address = CharField(max_length=255)
+  all_day = BooleanField()
+  position = ForeignKeyField(Position, related_name='position')

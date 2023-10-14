@@ -6,3 +6,4 @@ class BaseModel(Model):
 
   class Meta:
       database = DB
+      schema = 'app'

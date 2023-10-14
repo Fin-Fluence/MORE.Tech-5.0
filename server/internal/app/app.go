@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/MORE.Tech-5.0/server/internal/controller/http"
+	"github.com/MORE.Tech-5.0/server/internal/repo"
+	"github.com/MORE.Tech-5.0/server/internal/service"
 	"github.com/MORE.Tech-5.0/server/pkg/log"
 	"github.com/MORE.Tech-5.0/server/pkg/postgres"
 )
@@ -17,7 +19,16 @@ func Run(cfg *Config, logger log.Logger) error {
 	defer postgres.Close()
 	logger.Info("database connection established")
 
-	server := http.NewServer(logger, http.ServerOptions{
+	officeRepo := repo.NewOfficePostgres(postgres)
+	ohRepo := repo.NewOpenHoursPostgres(postgres)
+	osRepo := repo.NewOfficeServicePostgres(postgres)
+	atmRepo := repo.NewATMPostgres(postgres)
+	asRepo := repo.NewServicePostgres(postgres)
+
+	office := service.NewOffice(service.OfficeRepos{officeRepo, ohRepo, osRepo})
+	atm := service.NewATM(service.ATMRepos{atmRepo, asRepo})
+
+	server := http.NewServer(logger, http.Services{office, atm}, http.ServerOptions{
 		Addr:    fmt.Sprintf("%s:%s", cfg.HTTP.Host, cfg.HTTP.Port),
 		Origins: cfg.HTTP.Origins,
 	})

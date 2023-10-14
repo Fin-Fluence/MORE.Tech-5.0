@@ -3,10 +3,12 @@ package http
 import (
 	"net/http"
 
+	_ "github.com/MORE.Tech-5.0/server/docs"
 	"github.com/MORE.Tech-5.0/server/pkg/log"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/rs/cors"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 )
 
 type ServerOptions struct {
@@ -14,7 +16,10 @@ type ServerOptions struct {
 	Origins []string
 }
 
-func NewServer(logger log.Logger, opts ServerOptions) *http.Server {
+// @title MORE.Tech 5.0 API
+// @version 1.0
+// @description This is a MORE.Tech 5.0 server
+func NewServer(logger log.Logger, services Services, opts ServerOptions) *http.Server {
 	mux := chi.NewMux()
 	c := cors.New(cors.Options{
 		AllowedOrigins:   opts.Origins,
@@ -32,7 +37,8 @@ func NewServer(logger log.Logger, opts ServerOptions) *http.Server {
 	mux.NotFound(NotFound)
 	mux.MethodNotAllowed(MethodNotAllowed)
 
-	mux.Mount("/", Router())
+	mux.Mount("/", Router(services))
+	mux.Get("/swagger/*", httpSwagger.Handler())
 
 	return &http.Server{
 		Addr:    opts.Addr,

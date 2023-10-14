@@ -46,11 +46,29 @@ func (a *atm) GetCache() ([]entity.ATM, error) {
 	return a.repos.Cache.GetAll(context.Background())
 }
 
-func (a *atm) Get(filter entity.FilterATM) ([]entity.ATM, error) {
-	return a.Filter(filter)
+func (a *atm) Get(filter entity.FilterATM) []entity.ATM {
+	filtered := a.Filter(filter)
+
+	if filter.Position != nil && filter.Position.Latitude != nil && filter.Position.Longitude != nil {
+		pos := entity.Position{
+			Latitude:  *filter.Position.Latitude,
+			Longitude: *filter.Position.Longitude,
+		}
+		result := make([]entity.ATM, 0)
+		for _, atm := range filtered {
+			d := getDistance(pos, *atm.Position)
+			if d <= 25 {
+				result = append(result, atm)
+			}
+		}
+
+		return result
+	}
+
+	return filtered
 }
 
-func (a *atm) Filter(filter entity.FilterATM) ([]entity.ATM, error) {
+func (a *atm) Filter(filter entity.FilterATM) []entity.ATM {
 	filteredATMs := make([]entity.ATM, 0)
 
 	atms, _ := a.GetCache()
@@ -84,5 +102,5 @@ func (a *atm) Filter(filter entity.FilterATM) ([]entity.ATM, error) {
 		filteredATMs = append(filteredATMs, atm)
 	}
 
-	return filteredATMs, nil
+	return filteredATMs
 }

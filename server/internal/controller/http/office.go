@@ -40,11 +40,7 @@ func (o *Office) Get(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	offices, err := o.service.Get(filter)
-	if err != nil {
-		InternalServerError(w)
-		return
-	}
+	offices := o.service.Get(filter)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)

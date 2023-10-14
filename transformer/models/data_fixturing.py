@@ -1,5 +1,5 @@
 from db.serilizer import Serilizer
-from .base import BaseParser
+from .base.base_parser import BaseParser
 
 
 class DataFixturing(BaseParser):

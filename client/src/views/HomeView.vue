@@ -1,15 +1,31 @@
 <script setup>
 import DepartamentsList from '@/components/DepartamentsList.vue';
 import TheFilter from '@/components/TheFilter.vue';
+import DeparnamentInfo from '@/components/DeparnamentInfo.vue';
 import TheMap from '@/components/TheMap.vue';
+import { ref } from 'vue';
+
+let filterIsActive = ref(false)
+let infoIsActive = ref(false)
 
 
+
+const openInfoDeportament = () => {
+  infoIsActive.value = true
+}
 </script>
 
 <template>
   <div class="home">
     <div class="content">
-      <the-filter/>
+      <the-filter
+        :active="filterIsActive"
+        @closeFilter="() => filterIsActive = false"
+      />
+      <deparnament-info
+        :active="infoIsActive"
+        @closeFilter="() => infoIsActive = false"
+      />
       <div class="content__header">
         <div class="content__search">
           <input placeholder="Город, район, метро, улица">
@@ -39,7 +55,9 @@ import TheMap from '@/components/TheMap.vue';
                 Банкоматы
               </button>
             </div>
-            <button class="btn btn_settings">
+            <button class="btn btn_settings"
+              @click="() => filterIsActive = true"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" width="21" height="14" viewBox="0 0 21 14" fill="none">
                 <path d="M11.3867 9.00004C11.8672 7.82087 12.9688 7.00004 14.25 7.00004C15.5312 7.00004 16.6328 7.82087 17.1133 9.00004H19.25C19.9414 9.00004 20.5 9.59587 20.5 10.3334C20.5 11.0709 19.9414 11.6667 19.25 11.6667H17.1133C16.6328 12.8459 15.5312 13.6667 14.25 13.6667C12.9688 13.6667 11.8672 12.8459 11.3867 11.6667H1.75C1.05859 11.6667 0.5 11.0709 0.5 10.3334C0.5 9.59587 1.05859 9.00004 1.75 9.00004H11.3867Z" fill="white"/>
                 <path d="M8 0.333374C9.28125 0.333374 10.3828 1.15421 10.8633 2.33337H19.25C19.9414 2.33337 20.5 2.92921 20.5 3.66671C20.5 4.40421 19.9414 5.00004 19.25 5.00004H10.8633C10.3828 6.17921 9.28125 7.00004 8 7.00004C6.71875 7.00004 5.61719 6.17921 5.13672 5.00004H1.75C1.05859 5.00004 0.5 4.40421 0.5 3.66671C0.5 2.92921 1.05859 2.33337 1.75 2.33337H5.13672C5.61719 1.15421 6.71875 0.333374 8 0.333374Z" fill="white"/>
@@ -47,24 +65,50 @@ import TheMap from '@/components/TheMap.vue';
             </button>
           </div>
           <div class="content__filter-whom">
-            <button class="content__whom-btn btn btn_blue">
-              Физическим лицам
-            </button>
-            <button class="content__whom-btn btn">
-              Организациям
-            </button>
-            <button class="content__whom-btn btn">
-              Прайм
-            </button>
-            <button class="content__whom-btn btn">
-              Привелигированным
-            </button>
+            <div class="subtitle">
+              Выбор сегмента
+            </div>
+            <div class="content__whom-list">
+              <button class="content__whom-btn btn btn_blue">
+                Физическим лицам
+              </button>
+              <button class="content__whom-btn btn">
+                Организациям
+              </button>
+              <button class="content__whom-btn btn">
+                Прайм
+              </button>
+              <button class="content__whom-btn btn">
+                Привелигированным
+              </button>
+            </div>
+          </div>
+          <div class="content__filter-whom">
+            <div class="subtitle">
+              Быстрый доступ
+            </div>
+            <div class="content__whom-list">
+              <button class="content__whom-btn btn">
+                Физическим лицам
+              </button>
+              <button class="content__whom-btn btn">
+                Организациям
+              </button>
+              <button class="content__whom-btn btn">
+                Прайм
+              </button>
+              <button class="content__whom-btn btn">
+                Привелигированным
+              </button>
+            </div>
           </div>
         </div>
       </div>
       <div class="departaments custom-scroll">
-        <departaments-list/>
-        <departaments-list/>
+        <departaments-list
+          v-for="(departament, index) in [1,2]" :key="index"
+          @openInfoDepartament="openInfoDeportament"
+        />
       </div>
     </div>
     <the-map/>
@@ -90,6 +134,7 @@ import TheMap from '@/components/TheMap.vue';
   flex-direction: column;
   height: calc(100vh - 71px);
   position: relative;
+  overflow: hidden;
   &__header {
 
   }
@@ -142,10 +187,13 @@ import TheMap from '@/components/TheMap.vue';
   }
 
   &__filter-whom {
+    margin-bottom: 40px;
+  }
+
+  &__whom-list {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-bottom: 40px;
   }
 
   &__whom-btn {

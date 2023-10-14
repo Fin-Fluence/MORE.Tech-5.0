@@ -1,9 +1,23 @@
 <script setup>
+import { defineProps, defineEmits } from 'vue';
 
+const emit = defineEmits(['openInfoDepartament'])
+
+const props = defineProps({
+    workLoad: {
+        type: Boolean,
+    }
+})
+
+const openInfoDepartament = () => {
+    emit('openInfoDepartament')
+}
 </script>
 
 <template>
-    <div class="departament">
+    <div class="departament"
+        @click="openInfoDepartament"
+    >
         <div class="departament__icon">
             <img src="@/assets/images/icons/mark.svg">
         </div>
@@ -12,8 +26,14 @@
                 г. Москва, Ленинский пр-т, д. 34/1
             </div>
             <div class="departament__info">
-                <span>
+                <span v-if="props.workLoad === 0" style="color: #F1A038;">
+                    заполнено
+                </span>
+                <span v-if="props.workLoad === 1">
                     не заполнено
+                </span>
+                <span v-if="props.workLoad === 2" style="color: #CA181F;">
+                    переполнено
                 </span>
                 <div class="point">
 
@@ -34,6 +54,12 @@
     display: flex;
     align-items: center;
     padding: 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    &:hover {
+        border: 1px solid #4789EB;
+    }
     &__icon {
         margin-right: 16px;
     }

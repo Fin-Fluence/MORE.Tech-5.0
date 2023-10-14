@@ -3,14 +3,42 @@ import * as ymaps3 from 'ymaps3';
 import markImage from '@/assets/images/icons/mark.svg';
 import { ref } from 'vue';
 
-const coordinates = ref([
-    [37.64, 55.76],
-]);
 
-const coordinates2 = ref([
-    [37.94, 55.76],
-    [37.74, 55.76],
-]);
+const marks = ref([
+    {   coordinates: [37.94, 55.76],
+        workload: 0 
+    },
+    {   coordinates: [37.74, 55.76],
+        workload: 1
+    },
+    {   coordinates: [38.14, 55.86],
+        workload: 5
+    },
+    {   coordinates: [37.74, 55.76],
+        workload: 4
+    },
+    {   coordinates: [37.88, 55.70],
+        workload: 3
+    },
+    {   coordinates: [38.02, 55.74],
+        workload: 1 
+    },
+    {   coordinates: [37.68, 55.82],
+        workload: 1
+    },
+    {   coordinates: [37.86, 55.82],
+        workload: 5
+    },
+    {   coordinates: [37.94, 55.76],
+        workload: 4
+    },
+    {   coordinates: [37.82, 55.78],
+        workload: 3 
+    },
+    {   coordinates: [37.90, 55.68],
+        workload: 2 
+    },
+])
 const userCoordinates = ref(null)
 
 async function getUserCoordinates() {
@@ -25,6 +53,7 @@ async function getUserCoordinates() {
             },
             (error) => {
                 console.error('Ошибка получения координат пользователя:', error);
+                userCoordinates.value = [37.94, 55.76]
                 reject(error);
             }
         );
@@ -49,10 +78,8 @@ let YMapDefaultFeaturesLayer = null;
 let YMapMarker = null;
 let YMapFeatureDataSource = null;
 let YMapLayer = null;
-let YMapControls = null;
 let YMapClusterer = null;
 let clusterByGrid = null;
-let YMapGeolocationControl = null;
 initMap();
 async function initMap() {
     try {
@@ -65,31 +92,21 @@ async function initMap() {
         YMapMarker = ymaps3.YMapMarker;
         YMapFeatureDataSource = ymaps3.YMapFeatureDataSource;
         YMapLayer = ymaps3.YMapLayer;
-        YMapControls = ymaps3.YMapControls;
 
         YMapClusterer = await ymaps3.import('@yandex/ymaps3-clusterer@0.0.1');
         clusterByGrid = YMapClusterer.clusterByGrid;
         YMapClusterer = YMapClusterer.YMapClusterer;
 
-        const controlsPackage = await ymaps3.import('@yandex/ymaps3-controls@0.0.1');
-        YMapGeolocationControl = controlsPackage.YMapGeolocationControl;
 
         // Координаты центра карты
         const CENTER_COORDINATES = userCoordinates.value;
         const LOCATION = {center: CENTER_COORDINATES, zoom: 9};
-
-        const controls = new YMapControls({position: 'right'});
-        const geolocationControl = new YMapGeolocationControl();
-        controls.addChild(geolocationControl);
-
-
 
         map = new YMap(document.getElementById('map'), {location: LOCATION});
         map.addChild(new YMapDefaultSchemeLayer())
         .addChild(new YMapDefaultFeaturesLayer())
         .addChild(new YMapFeatureDataSource({id: 'my-source'}))
         .addChild(new YMapLayer({source: 'my-source', type: 'markers', zIndex: 1800}))
-        .addChild(controls);
 
 
 
@@ -99,6 +116,7 @@ async function initMap() {
 
 
 
+        createCluster(marks.value)
 
         // user
         const content = document.createElement('section');
@@ -115,11 +133,14 @@ async function initMap() {
     }
 }
 
-const createCluster = (coordinates) => {
-    console.log(coordinates)
+const createCluster = (marks) => {
     const contentPin = document.createElement('div');
     contentPin.classList.add('mark');
+
+
+
     contentPin.innerHTML = `<img src=${markImage}>`;
+
 
     const marker = (feature) =>
         new ymaps3.YMapMarker({
@@ -137,11 +158,11 @@ const createCluster = (coordinates) => {
         circle(features.length).cloneNode(true)
     );
 
-    const points = coordinates.map((lnglat, i) => ({
+    const points = marks.map((mark, i) => ({
         type: 'Feature',
         id: i,
-        geometry: { coordinates: lnglat },
-        properties: { name: 'Point of issue of orders' }
+        geometry: { coordinates: mark.coordinates },
+        properties: { name: 'Point of issue of orders', workload: mark.workload }
     }));
 
     const clusterer = new YMapClusterer({
@@ -152,17 +173,8 @@ const createCluster = (coordinates) => {
     });
 
     map.addChild(clusterer);
-    map.update()
+    map.update();
 }
-
-setTimeout(() => {
-    createCluster(coordinates.value)
-}, 1000);
-
-setTimeout(() => {
-    createCluster(coordinates2.value)
-}, 2000);
-
 
 
 </script>

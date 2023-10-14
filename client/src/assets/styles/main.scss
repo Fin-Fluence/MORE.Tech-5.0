@@ -84,3 +84,13 @@ input {
 input:focus::placeholder {
     color: transparent;
 }
+
+.subtitle {
+    color: var(--absolute-input-gray, #ACB6C3);
+    font-family: VTB Group UI;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 120%; /* 19.2px */
+    margin-bottom: 12px;
+}

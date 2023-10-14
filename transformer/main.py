@@ -6,4 +6,4 @@ from db.models_dto import fixtures
 if __name__ == '__main__':
   StatsParser().perform()
   DataTransformer().perform()
-  DataFixturing.perform()  
+  DataFixturing().perform()  

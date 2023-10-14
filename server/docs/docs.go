@@ -138,6 +138,9 @@ const docTemplate = `{
                 "kep": {
                     "type": "boolean"
                 },
+                "load": {
+                    "type": "integer"
+                },
                 "my_branch": {
                     "type": "boolean"
                 },

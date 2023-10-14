@@ -26,6 +26,8 @@ definitions:
         type: string
       kep:
         type: boolean
+      load:
+        type: integer
       my_branch:
         type: boolean
       open_hours:

@@ -2,6 +2,8 @@
 import * as ymaps3 from 'ymaps3';
 import markImage from '@/assets/images/icons/mark.svg';
 import { ref, defineProps, defineEmits, watch } from 'vue';
+import { useFilterStore } from '@/stores/filterStore';
+let filterStore = useFilterStore();
 
 
 const emit = defineEmits(['openInfoDepartament', 'mapInit'])
@@ -89,6 +91,11 @@ async function initMap() {
         contentPin.classList.add('mark')
         contentPin.innerHTML = `<img src=${markImage}>`;
 
+
+        filterStore.filter.position = {
+            'latitude': userCoordinates.value[1],
+            'longitude': userCoordinates.value[0]
+        }
         // user
         const content = document.createElement('section');
         content.innerHTML = `<div class="me"></div>`;
@@ -109,15 +116,33 @@ async function initMap() {
 let clusterer = null;
 const createCluster = (marks) => {
     if(!marks) return
+    console.log(map.children)
 
-    // if (clusterer) {
-    //     map.remove(clusterer);
-    // }
-
-
+    map.destroy()
+    const defaultSchemeLayer = new YMapDefaultSchemeLayer({theme: 'dark'});
+    const CENTER_COORDINATES = userCoordinates.value;
+    const LOCATION = {center: CENTER_COORDINATES, zoom: 9};
+    map = new YMap(document.getElementById('map'), {location: LOCATION});
+        map.addChild(new YMapDefaultSchemeLayer())
+        .addChild(new YMapDefaultFeaturesLayer())
+        .addChild(new YMapFeatureDataSource({id: 'my-source'}))
+        .addChild(new YMapLayer({source: 'my-source', type: 'markers', zIndex: 1800}))
+        .addChild(defaultSchemeLayer);
+    
     const marker = (feature) => {
         const contentPin = document.createElement('div');
         contentPin.classList.add('mark');
+        contentPin.classList.add('load');
+        if(feature.load <= 20 && feature.load >= 0) {
+            contentPin.classList.add(`load_low`);
+        }
+        if(feature.load <= 40 && feature.load > 20) {
+            contentPin.classList.add(`load_mid`);
+        }
+        if(feature.load > 40) {
+            contentPin.classList.add(`load_hard`);
+        }
+
         contentPin.setAttribute('data-id', feature.id);
         contentPin.innerHTML = `<img src=${markImage}>`;
 
@@ -141,9 +166,10 @@ const createCluster = (marks) => {
     );
 
 
-    const points = marks.map((mark,i) => ({
+    const points = marks.map((mark) => ({
         type: 'Feature',
-        id: i,
+        id: mark.id,
+        load: mark.load,
         geometry: { coordinates: [mark.position.longitude, mark.position.latitude] },
         properties: { name: 'Point of issue of orders'}
     }));
@@ -156,9 +182,6 @@ const createCluster = (marks) => {
     });
 
     map.addChild(clusterer);
-    setTimeout(() => {
-        
-    }, 1500);
 }
 
 watch(() => props.offices,
@@ -208,5 +231,45 @@ watch(() => props.offices,
 
 .mark {
     cursor: pointer;
+    &::after {
+        content: "";
+        width: 5px;
+        height: 5px;
+        background: red;
+        border-radius: 50%;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+}
+.ymaps3x0--marker {
+    position: relative;
+}
+.load {
+    &::after {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: transparent;
+    }
+    &_low {
+        &::after {
+            background: green;
+        }
+    }
+    &_mid {
+        &::after {
+            background: orange;
+        }
+    }
+    &_hard {
+        &::after {
+            background: red;
+        }
+    }
 }
 </style>

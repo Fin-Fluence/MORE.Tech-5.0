@@ -4,6 +4,9 @@ import TheFilter from '@/components/TheFilter.vue';
 import DeparnamentInfo from '@/components/DeparnamentInfo.vue';
 import TheMap from '@/components/TheMap.vue';
 import { onMounted, ref } from 'vue';
+import { useFilterStore } from '@/stores/filterStore';
+
+let filterStore = useFilterStore();
 
 let filterIsActive = ref(false)
 let infoIsActive = ref(false)
@@ -17,20 +20,32 @@ const openContentFull = () => {
   openFullContent.value = !openFullContent.value
 }
 
-const offices = ref([])
+
+
+const offices = ref([]);
 const getOffice = async () => {
   try {
-    const response = await fetch('http://localhost:3000/atm', {
-      method: 'GET'
+    // const url = 'http://localhost:3000/office?';
+    const params = { ...filterStore.filter };
+    if (Array.isArray(params.service_names) && params.service_names.length === 0) {
+      delete params.service_names;
+    }
+    console.log(params);
+    const url = 'http://localhost:3000/office?filter=' + JSON.stringify(params);
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
-
-      const data = await response.json()
-      offices.value = data
-
+    const data = await response.json();
+    offices.value = data;
+    console.log(data);
   } catch (err) {
-    console.error('Произошла ошибка:', err)
+    console.error('Произошла ошибка:', err);
   }
 };
+
 
 
 const mapInit = () => {
@@ -54,6 +69,7 @@ onMounted(() => {
       <the-filter
         :active="filterIsActive"
         @closeFilter="() => filterIsActive = false"
+        @getMarksWithFilter="getOffice()"
       />
       <deparnament-info
         :active="infoIsActive"

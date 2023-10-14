@@ -3,12 +3,13 @@ import { ref} from 'vue';
 
 export const useFilterStore = defineStore('filter', () => {
   const filter = ref({
-    limited: false,
-    weekend: false,
-    rent_boxes: false,
-    biometric_registration: false,
-    sims: false,
-    registration_ip: false
+    // limited: true,
+    // weekend: true,
+    // rent_boxes: true,
+    // biometric_registration: true,
+    // sims: true,
+    // registration_ip: true,
+    service_names: []
   });
 
   function setFilterProperty(propertyName, value) {
@@ -26,5 +27,16 @@ export const useFilterStore = defineStore('filter', () => {
     }
   }
 
-  return { filter, setFilterProperty, resetFilter, deleteFilterProperty };
+  function addServiceName(serverName) {
+    filter.value.service_names.push(serverName);
+  }
+
+  function removeServiceName(serverName) {
+    const index = filter.value.service_names.indexOf(serverName);
+    if (index !== -1) {
+      filter.value.service_names.splice(index, 1);
+    }
+  }
+
+  return { filter, setFilterProperty, resetFilter, deleteFilterProperty, addServiceName, removeServiceName };
 });

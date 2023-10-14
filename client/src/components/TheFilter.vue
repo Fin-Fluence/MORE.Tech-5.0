@@ -1,4 +1,3 @@
-
 <script setup>
 import { defineProps, defineEmits } from 'vue';
 import { useFilterStore } from '@/stores/filterStore';
@@ -9,29 +8,29 @@ const props = defineProps({
     }
 })
 
-const emit = defineEmits(['closeFilter'])
+const emit = defineEmits(['closeFilter', 'getMarksWithFilter'])
 
 const closeFilter = () => {
     emit('closeFilter')
 }
 
+const getMarksWithFilter = () => {
+    emit('getMarksWithFilter')
+}
 
 let filterStore = useFilterStore();
 
 const resetFilter = () => {
     filterStore.resetFilter()
 }
-
-const toggleBtn = (nameBtn, value) => {
-    if(!filterStore.filter[nameBtn]) {
-        filterStore.setFilterProperty(nameBtn,value)
-    } else if(filterStore.filter[nameBtn] === value) {
-        filterStore.deleteFilterProperty(nameBtn,value)
+const toggleBtn = (value) => {
+    console.log(filterStore.filter.service_names)
+    if (filterStore.filter.service_names.includes(value)) {
+        filterStore.removeServiceName(value);
     } else {
-        filterStore.setFilterProperty(nameBtn,value)
+        filterStore.addServiceName(value);
     }
 }
-
 </script>
 
 <template>
@@ -140,15 +139,14 @@ const toggleBtn = (nameBtn, value) => {
                 </span>
                 <div class="filter__select-list">
                     <button
-                        :class="{btn_blue: filterStore.filter.cards === 'debit'}"
-                        @click="toggleBtn('cards', 'debit')"
+                        :class="{btn_blue: filterStore.filter.service_names.includes('DebitCardIssuance')}"
+                        @click="toggleBtn('DebitCardIssuance')"
                     >
                         Дебетовые
                     </button>
                     <button
-                        :class="{btn_blue: filterStore.filter.cards === 'credit'}"
-                        @click="toggleBtn('cards', 'credit')"
-
+                        :class="{btn_blue: filterStore.filter.service_names.includes('CreditCardIssuance')}"
+                        @click="toggleBtn('CreditCardIssuance')"
                     >
                         Кредитные
                     </button>
@@ -160,14 +158,14 @@ const toggleBtn = (nameBtn, value) => {
                 </span>
                 <div class="filter__select-list">
                     <button
-                        :class="{btn_blue: filterStore.filter.investments === 'brokerage_services'}"
-                        @click="toggleBtn('investments', 'brokerage_services')"
+                        :class="{btn_blue: filterStore.filter.service_names.includes('BrokerService')}"
+                        @click="toggleBtn('BrokerService')"
                     >
                         Брокерское обслуживание
                     </button>
                     <button
-                        :class="{btn_blue: filterStore.filter.investments === 'trust_management'}"
-                        @click="toggleBtn('investments', 'trust_management')"
+                        :class="{btn_blue: filterStore.filter.service_names.includes('TrustManagement')}"
+                        @click="toggleBtn('TrustManagement')"
                     >
                         Доверительное управление
                     </button>
@@ -179,20 +177,20 @@ const toggleBtn = (nameBtn, value) => {
                 </span>
                 <div class="filter__select-list">
                     <button
-                        :class="{btn_blue: filterStore.filter.loans === 'credit'}"
-                        @click="toggleBtn('loans', 'credit')"
+                        :class="{btn_blue: filterStore.filter.service_names.includes('CreditFL')}"
+                        @click="toggleBtn('CreditFL')"
                     >
                         Кредит
                     </button>
                     <button
-                        :class="{btn_blue: filterStore.filter.loans === 'car_loan'}"
-                        @click="toggleBtn('loans', 'car_loan')"
+                        :class="{btn_blue: filterStore.filter.service_names.includes('CarCredit')}"
+                        @click="toggleBtn('CarCredit')"
                     >
                         Автокредит
                     </button>
                     <button
-                        :class="{btn_blue: filterStore.filter.loans === 'mortgage'}"
-                        @click="toggleBtn('loans', 'mortgage')"
+                        :class="{btn_blue: filterStore.filter.service_names.includes('Mortgage')}"
+                        @click="toggleBtn('Mortgage')"
                     >
                         Ипотека
                     </button>
@@ -204,14 +202,14 @@ const toggleBtn = (nameBtn, value) => {
                 </span>
                 <div class="filter__select-list">
                     <button
-                        :class="{btn_blue: filterStore.filter.Services === 'urrency_conversion'}"
-                        @click="toggleBtn('Services', 'urrency_conversion')"
+                        :class="{btn_blue: filterStore.filter.service_names.includes('ConversionFL')}"
+                        @click="toggleBtn('ConversionFL')"
                     >
                         Конвертация валюты
                     </button>
                     <button
-                        :class="{btn_blue: filterStore.filter.Services === 'payment_services'}"
-                        @click="toggleBtn('Services', 'payment_services')"
+                        :class="{btn_blue: filterStore.filter.service_names.includes('PaymentForServicesFL')}"
+                        @click="toggleBtn('PaymentForServicesFL')"
                     >
                         Оплата услуг
                     </button>
@@ -254,10 +252,14 @@ const toggleBtn = (nameBtn, value) => {
                 </label>
             </div>
             <div class="filter__btns">
-                <button class="filter__btn btn btn_blue">
+                <button class="filter__btn btn btn_blue"
+                    @click="getMarksWithFilter()"
+                >
                     Применить
                 </button>
-                <button class="filter__btn btn">
+                <button class="filter__btn btn"
+                    @click="closeFilter()"
+                >
                     Отмена
                 </button>
             </div>

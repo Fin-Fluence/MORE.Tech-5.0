@@ -4,7 +4,7 @@ from .base.base_parser import BaseParser
 # Класс для преобразования данных json в более удобный формат работы
 class DataTransformer(BaseParser):
   def __init__(self):
-    super().__init__('transformer/data/basic_data/', 'data/results/formatted/')
+    super().__init__('transformer/data/basic_data/', 'transformer/data/results/formatted/')
 
   def change_fields(self, data, fields_change):
     if type(data) is list:

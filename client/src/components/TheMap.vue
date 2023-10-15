@@ -1,6 +1,7 @@
 <script setup>
 import * as ymaps3 from 'ymaps3';
 import markImage from '@/assets/images/icons/mark.svg';
+import markImage_purple from '@/assets/images/icons/mark_purple.svg';
 import { ref, defineProps, defineEmits, watch } from 'vue';
 import { useFilterStore } from '@/stores/filterStore';
 let filterStore = useFilterStore();
@@ -155,7 +156,12 @@ const createCluster = (marks) => {
         }
 
         contentPin.setAttribute('data-id', feature.id);
-        contentPin.innerHTML = `<img src=${markImage}>`;
+        if(filterStore.filter.officeType === 'Да') {
+            contentPin.innerHTML = `<img src=${markImage}>`;
+        } 
+        if(filterStore.filter.officeType === 'Да (Зона Привилегия)') {
+            contentPin.innerHTML = `<img src=${markImage_purple}>`;
+        }
 
         const markerElement = new ymaps3.YMapMarker({
             coordinates: feature.geometry.coordinates,

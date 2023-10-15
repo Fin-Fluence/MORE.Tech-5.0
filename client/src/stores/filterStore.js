@@ -9,7 +9,8 @@ export const useFilterStore = defineStore('filter', () => {
     // biometric_registration: true,
     // sims: true,
     // registration_ip: true,
-    service_names: []
+    service_names: [],
+    officeType: 'Да'
   });
 
   function setFilterProperty(propertyName, value) {

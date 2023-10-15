@@ -1,17 +1,25 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, computed } from 'vue';
 
 const emit = defineEmits(['openInfoDepartament'])
 
 const props = defineProps({
-    workLoad: {
-        type: Boolean,
+    departament: {
+        type: Object,
     }
 })
 
 const openInfoDepartament = () => {
     emit('openInfoDepartament')
 }
+const kilometers = computed(() => {
+    if (props.departament.distance) {
+        const kilometers = props.departament.distance / 1000;
+        return kilometers >= 10 ? kilometers.toFixed(1) + ' км.': kilometers + ' км.';
+    } else {
+        return '';
+    }
+});
 </script>
 
 <template>
@@ -24,27 +32,22 @@ const openInfoDepartament = () => {
         <div class="departament__text">
             <div class="departament__address">
                 г. Москва, Ленинский пр-т, д. 34/1
+                {{ props.departament.address }}
             </div>
             <div class="departament__info">
-                <span v-if="props.workLoad === 0" style="color: #F1A038;">
-                    заполнено
-                </span>
-                <span v-if="props.workLoad === 1">
+                <span v-if="(props.departament.load <= 20 && props.departament.load >= 0) " style="color: green;">
                     не заполнено
                 </span>
-                <span v-if="props.workLoad === 2" style="color: #CA181F;">
-                    переполнено
+                <span v-if="(props.departament.load <= 40 && props.departament.load >= 20)" style="color: orange;">
+                    заполнено
                 </span>
-                <div class="point">
-
-                </div>
-                <span>
-                    закроется в 19:00
+                <span v-if="(props.departament.load >= 40)" style="color: #CA181F;">
+                    переполнено
                 </span>
             </div>
         </div>
         <div class="departament__distance">
-            2.4 км
+            {{ kilometers }}
         </div>
     </div>
 </template>
@@ -57,8 +60,9 @@ const openInfoDepartament = () => {
     cursor: pointer;
     border: 1px solid transparent;
     border-radius: 12px;
+    transition: .2s;
     &:hover {
-        border: 1px solid #4789EB;
+        background: #96969675;
     }
     &__icon {
         margin-right: 16px;
@@ -106,6 +110,7 @@ const openInfoDepartament = () => {
         font-style: normal;
         font-weight: 400;
         line-height: 140%; /* 25.2px */
+        white-space: nowrap;
     }
 }
 

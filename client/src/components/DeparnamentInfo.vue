@@ -1,17 +1,71 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue';
+import { defineProps, defineEmits, computed } from 'vue';
 
 const props = defineProps({
     active: {
         type: Boolean,
+    },
+    info: {
+        type: Object,
     }
 })
 
+const kilometers = computed(() => {
+    if (props.info.distance) {
+        const kilometers = props.info.distance / 1000;
+        return kilometers >= 10 ? kilometers.toFixed(1) + ' км.': kilometers + ' км.';
+    } else {
+        return '';
+    }
+});
 const emit = defineEmits(['closeFilter'])
 
 const closeFilter = () => {
     emit('closeFilter')
 }
+
+
+
+function formatOpenHours(openHours) {
+  if (!Array.isArray(openHours) || openHours.length === 0) {
+    return 'Выходной';
+  }
+
+  const days = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
+  let currentDay = null;
+  const formattedHours = [];
+
+  for (const day of days) {
+    const matchingDay = openHours.find(item => item.day === day);
+
+    if (matchingDay) {
+      if (matchingDay.hours === currentDay) {
+        formattedHours[formattedHours.length - 1] += `, ${day}`;
+      } else {
+        formattedHours.push(`${day}: ${matchingDay.hours}`);
+        currentDay = matchingDay.hours;
+      }
+    } else {
+      formattedHours.push(`${day}: выходной`);
+    }
+  }
+
+  return formattedHours.join(' ');
+}
+function generateRouteLink() {
+    const myLatitude = 55.12345; 
+    const myLongitude = 37.67890; 
+
+    if (props.info && Object.keys(props.info).length > 0) {
+        const destinationLatitude = props.info.position.latitude;
+        const destinationLongitude = props.info.position.longitude;
+        return `https://yandex.ru/maps/?rtext=С${myLatitude},${myLongitude}~${destinationLatitude},${destinationLongitude}&rtt=mt`;
+    } else {
+        return `https://yandex.ru/maps/?rtext=С${myLatitude},${myLongitude}~${myLatitude},${myLongitude}&rtt=mt`;
+    }
+}
+
+
 </script>
 
 <template>
@@ -21,7 +75,7 @@ const closeFilter = () => {
         <div class="filter__header">
             <div class="filter__header-text">
                 <div class="filter__header-title">
-                    ДО Кредитный центр «Зубовский бульвар» Филиала № 7701 Банка ВТБ (ПАО)
+                    {{ props.info.sale_point_name }}
                 </div>
             </div>
             <div class="filter__header-close"
@@ -33,10 +87,10 @@ const closeFilter = () => {
         <div class="info__list custom-scroll">
             <div class="info__list-top">
                 <p>
-                    г. Москва, Зубовский бульвар, д. 27/26, стр. 1
+                    {{ props.info.address }}
                 </p>
                 <span>
-                    2.4 км
+                    {{ kilometers }}
                 </span>
             </div>
             <div class="info__list-who">
@@ -65,28 +119,28 @@ const closeFilter = () => {
                     </span>
                 </div>
             </div>
-            <p class="info__subtitle">
+            <p class="info__subtitle" v-if="props.info.open_hours">
                 Режим работы
             </p>
-            <div class="info__time">
+            <div class="info__time" v-if="props.info.open_hours">
                 <p class="info__title">
                     Для физических лиц
                 </p>
                 <p class="time">
-                    пн-пт: 09:00-20:00 сб, вс: выходной
+                    {{ formatOpenHours(props.info.open_hours) }}
                 </p>
             </div>
-            <div class="info__time">
+            <div class="info__time" v-if="props.info.open_hours_individual">
                 <p class="info__title">
                     Для организаций
                 </p>
                 <p class="time">
-                    пн-чт: 09:00-18:00 пт: 09:00-17:00 сб, вс: выходной
+                    {{ formatOpenHours(props.info.open_hours_individual) }}
                 </p>
             </div>
-            <button class="info__btn btn btn_blue">
-                Проложить маршрут
-            </button>
+            <a :href="generateRouteLink()" target="_blank" class="info__btn btn btn_blue">
+                Проложить маршрут на карте
+            </a>
         </div>
     </div>
 </template>
@@ -182,6 +236,7 @@ const closeFilter = () => {
 }
 &__btn {
     margin: 0 auto;
+    width: fit-content;
 }
 & .time {
     color: var(--absolute-input-gray, #ACB6C3);

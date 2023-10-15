@@ -217,9 +217,9 @@ watch(() => props.offices,
 <style lang="scss">
 #map {
     width: 100%;
-    height: calc(100vh - 71px);
+    height: calc(100vh - 107px);
     @media (max-width: 539px) {
-        height: calc(50vh - 71px);
+        height: calc(50vh - 107px);
     }
 }
 .me {

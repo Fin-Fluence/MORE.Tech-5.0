@@ -237,14 +237,14 @@ onMounted(() => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 71px);
+  height: calc(100vh - 107px);
   position: relative;
   overflow: hidden;
   @media (max-width: 539px) {
     transition: .2s;
     position: absolute;
     z-index: 5;
-    height: calc(100vh - 71px);
+    height: calc(100vh - 107px);
     top: 100%;
     width: 100%;
     max-width: none;

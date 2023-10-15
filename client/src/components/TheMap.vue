@@ -17,20 +17,22 @@ const props = defineProps({
 const userCoordinates = ref(null)
 
 async function getUserCoordinates() {
-    return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const latitude = position.coords.latitude;
-                const longitude = position.coords.longitude;
-                userCoordinates.value = [longitude, latitude];
-                resolve();
-            },
-            (error) => {
-                console.error('Ошибка получения координат пользователя:', error);
-                userCoordinates.value = [37.94, 55.76]
-                reject(error);
-            }
-        );
+    return new Promise((resolve) => {
+        // для демонстрации
+        userCoordinates.value = [37.94, 55.76]
+        resolve();
+        // navigator.geolocation.getCurrentPosition(
+        //     (position) => {
+        //         const latitude = position.coords.latitude;
+        //         const longitude = position.coords.longitude;
+        //         userCoordinates.value = [longitude, latitude];
+        //         resolve();
+        //     },
+        //     (error) => {
+        //         console.error('Ошибка получения координат пользователя:', error);
+        //         reject(error);
+        //     }
+        // );
     });
 }
 function circle(count) {
@@ -128,7 +130,16 @@ const createCluster = (marks) => {
         .addChild(new YMapFeatureDataSource({id: 'my-source'}))
         .addChild(new YMapLayer({source: 'my-source', type: 'markers', zIndex: 1800}))
         .addChild(defaultSchemeLayer);
-    
+            // user
+    const content = document.createElement('section');
+        content.innerHTML = `<div class="me"></div>`;
+        const userMark = new YMapMarker({       
+            coordinates: userCoordinates.value,
+            draggable: false
+        },
+            content
+    );
+    map.addChild(userMark);
     const marker = (feature) => {
         const contentPin = document.createElement('div');
         contentPin.classList.add('mark');
@@ -231,6 +242,7 @@ watch(() => props.offices,
 
 .mark {
     cursor: pointer;
+    transform: translate(-14px, -42px);
     &::after {
         content: "";
         width: 5px;

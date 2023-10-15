@@ -1,10 +1,28 @@
 <script setup>
-import DepartamentsList from '@/components/DepartamentsList.vue';
 import TheFilter from '@/components/TheFilter.vue';
 import DeparnamentInfo from '@/components/DeparnamentInfo.vue';
 import TheMap from '@/components/TheMap.vue';
 import { onMounted, ref } from 'vue';
 import { useFilterStore } from '@/stores/filterStore';
+import TheDepartament from '@/components/TheDepartament.vue';
+
+const currentDeparnamentInfo = ref({})
+
+const filterCurrentFepartament = (id) => {
+  currentDeparnamentInfo.value = {...offices.value.find(department => department.id === id)}
+  console.log(currentDeparnamentInfo.value)
+};
+
+
+const toggleBtn = (value) => {
+    console.log(filterStore.filter.service_names)
+    if (filterStore.filter.service_names.includes(value)) {
+        filterStore.removeServiceName(value);
+    } else {
+        filterStore.addServiceName(value);
+    }
+    getOffice()
+}
 
 let filterStore = useFilterStore();
 
@@ -12,7 +30,7 @@ let filterIsActive = ref(false)
 let infoIsActive = ref(false)
 let openFullContent = ref(false)
 
-const openInfoDeportament = () => {
+const openInfoDepartament = () => {
   infoIsActive.value = true
 }
 
@@ -20,18 +38,17 @@ const openContentFull = () => {
   openFullContent.value = !openFullContent.value
 }
 
-
+const paramsObjects = ref('office')
 
 const offices = ref([]);
 const getOffice = async () => {
   try {
-    // const url = 'http://localhost:3000/office?';
     const params = { ...filterStore.filter };
     if (Array.isArray(params.service_names) && params.service_names.length === 0) {
       delete params.service_names;
     }
-    console.log(params);
-    const url = 'http://localhost:3000/office?filter=' + JSON.stringify(params);
+    const url = `http://localhost:3000/${paramsObjects.value}?filter=` + JSON.stringify(params);
+    console.log(url)
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -40,13 +57,15 @@ const getOffice = async () => {
     });
     const data = await response.json();
     offices.value = data;
-    console.log(data);
   } catch (err) {
     console.error('Произошла ошибка:', err);
   }
 };
 
-
+const getNewAllObjects = () => {
+  console.log( filterStore.filter.service_names = [])
+  getOffice()
+}
 
 const mapInit = () => {
   getOffice();
@@ -74,6 +93,7 @@ onMounted(() => {
       <deparnament-info
         :active="infoIsActive"
         @closeFilter="() => infoIsActive = false"
+        :info="currentDeparnamentInfo"
       />
       <div class="content__header">
         <div class="content__search">
@@ -97,10 +117,16 @@ onMounted(() => {
         <div class="content__filter">
           <div class="content__filter-top">
             <div class="content__filter-btns">
-              <button class="btn btn_blue">
+              <button class="btn "
+                :class="{btn_blue: paramsObjects === 'office'}"
+                @click="() => {paramsObjects = 'office', getNewAllObjects()}"
+              >
                 Отделения
               </button>
-              <button class="btn">
+              <button class="btn"
+                :class="{btn_blue: paramsObjects === 'atm'}"
+                @click="() => {paramsObjects = 'atm', getNewAllObjects()}"
+              >
                 Банкоматы
               </button>
             </div>
@@ -137,28 +163,31 @@ onMounted(() => {
               Быстрый доступ
             </div>
             <div class="content__whom-list">
-              <button class="content__whom-btn btn">
-                Физическим лицам
+              <button class="content__whom-btn btn"
+                :class="{btn_blue: filterStore.filter.service_names.includes('BrokerService')}"
+                @click="toggleBtn('BrokerService')"
+              >
+                Конвертация валют
               </button>
-              <button class="content__whom-btn btn">
-                Организациям
-              </button>
-              <button class="content__whom-btn btn">
-                Прайм
-              </button>
-              <button class="content__whom-btn btn">
-                Привелигированным
+              <button class="content__whom-btn btn"
+                :class="{btn_blue: filterStore.filter.service_names.includes('ConversionFL')}"
+                @click="toggleBtn('ConversionFL')"
+              >
+                Брокерское обслуживание
               </button>
             </div>
           </div>
         </div>
       </div>
       <div class="departaments custom-scroll">
-        <departaments-list
-          v-for="(departament, index) in [1,2]" :key="index"
-          :title="'Отделения в радиусе 3 км:'"
-          @openInfoDepartament="openInfoDeportament"
-        />
+        <div class="departaments">
+          <the-departament
+              v-for="(departament, index) in offices" :key="index"
+              :departament="departament"
+              @openInfoDepartament="openInfoDepartament()"
+              @click="filterCurrentFepartament(departament.id)"
+          />
+      </div>
       </div>
     </div>
     <the-map

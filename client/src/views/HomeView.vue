@@ -138,7 +138,7 @@ onMounted(() => {
               </svg>
             </button>
           </div>
-          <div class="content__filter-whom">
+          <div class="content__filter-whom" v-if="paramsObjects === 'office'">
             <div class="subtitle">
               Выбор сегмента
             </div>

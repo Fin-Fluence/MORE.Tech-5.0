@@ -53,17 +53,21 @@ function formatOpenHours(openHours) {
   return formattedHours.join(' ');
 }
 function generateRouteLink() {
-    const myLatitude = 55.12345; 
-    const myLongitude = 37.67890; 
+    const myLatitude = 55.768339; // Широта места отправления
+    const myLongitude = 37.845873; // Долгота места отправления
 
     if (props.info && Object.keys(props.info).length > 0) {
-        const destinationLatitude = props.info.position.latitude;
-        const destinationLongitude = props.info.position.longitude;
-        return `https://yandex.ru/maps/?rtext=С${myLatitude},${myLongitude}~${destinationLatitude},${destinationLongitude}&rtt=mt`;
+        const destinationLatitude = props.info.position.latitude; // Широта места назначения
+        const destinationLongitude = props.info.position.longitude; // Долгота места назначения
+        const centerLatitude = (myLatitude + destinationLatitude) / 2; // Широта центра карты
+        const centerLongitude = (myLongitude + destinationLongitude) / 2; // Долгота центра карты
+
+        return `https://yandex.ru/maps/213/moscow/?ll=${centerLongitude}%2C${centerLatitude}&mode=routes&rtext=${myLatitude}%2C${myLongitude}~${destinationLatitude}%2C${destinationLongitude}&rtt=mt&ruri=~&z=12.8`;
     } else {
-        return `https://yandex.ru/maps/?rtext=С${myLatitude},${myLongitude}~${myLatitude},${myLongitude}&rtt=mt`;
+        return `https://yandex.ru/maps/213/moscow/?ll=${myLongitude}%2C${myLatitude}&mode=routes&rtext=${myLatitude}%2C${myLongitude}~${myLatitude}%2C${myLongitude}&rtt=mt&ruri=~&z=12.8`;
     }
 }
+
 
 
 </script>

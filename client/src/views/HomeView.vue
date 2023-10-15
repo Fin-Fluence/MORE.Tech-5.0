@@ -192,6 +192,7 @@ onMounted(() => {
     </div>
     <the-map
       :offices="offices"
+      @openInfoDepartament="(id) => {filterCurrentFepartament(id), openInfoDepartament()}"
       @mapInit="mapInit()"
     />
   </div>

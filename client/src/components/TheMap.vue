@@ -161,7 +161,7 @@ const createCluster = (marks) => {
             coordinates: feature.geometry.coordinates,
             source: 'my-source',
             onClick: () => {
-                emit('openInfoDepartament', 'feature.id');
+                emit('openInfoDepartament', feature.id);
             }
         }, contentPin.cloneNode(true));
 

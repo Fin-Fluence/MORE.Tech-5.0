@@ -13,6 +13,7 @@
                     <span></span>
                 </div>
             </div> -->
+            <img src="@/assets/images/icons/robot.svg">
         </div>
     </header>
 </template>

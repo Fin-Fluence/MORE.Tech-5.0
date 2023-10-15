@@ -124,7 +124,7 @@ onMounted(() => {
               </button>
               <button class="btn"
                 :class="{btn_blue: paramsObjects === 'atm'}"
-                @click="() => {paramsObjects = 'atm', getNewAllObjects()}"
+                @click="() => {paramsObjects = 'atm', getNewAllObjects(), filterStore.filter.officeType = 'Да'}"
               >
                 Банкоматы
               </button>
@@ -143,7 +143,10 @@ onMounted(() => {
               Выбор сегмента
             </div>
             <div class="content__whom-list">
-              <button class="content__whom-btn btn btn_blue">
+              <button class="content__whom-btn btn "
+                :class="{btn_blue: filterStore.filter.officeType === 'Да'}"
+                @click="() => {filterStore.filter.officeType = 'Да', getNewAllObjects()}"
+              >
                 Физическим лицам
               </button>
               <button class="content__whom-btn btn">
@@ -152,7 +155,10 @@ onMounted(() => {
               <button class="content__whom-btn btn">
                 Прайм
               </button>
-              <button class="content__whom-btn btn">
+              <button class="content__whom-btn btn"
+                :class="{btn_blue: filterStore.filter.officeType === 'Да (Зона Привилегия)'}"
+                @click="() => {filterStore.filter.officeType = 'Да (Зона Привилегия)', getNewAllObjects()}"
+              >
                 Привелигированным
               </button>
             </div>

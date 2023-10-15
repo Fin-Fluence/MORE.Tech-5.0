@@ -10,7 +10,6 @@ const currentDeparnamentInfo = ref({})
 
 const filterCurrentFepartament = (id) => {
   currentDeparnamentInfo.value = {...offices.value.find(department => department.id === id)}
-  console.log(currentDeparnamentInfo.value)
 };
 
 
@@ -63,7 +62,6 @@ const getOffice = async () => {
 };
 
 const getNewAllObjects = () => {
-  console.log( filterStore.filter.service_names = [])
   getOffice()
 }
 
@@ -87,6 +85,7 @@ onMounted(() => {
       </div>
       <the-filter
         :active="filterIsActive"
+        :activeObject="paramsObjects"
         @closeFilter="() => filterIsActive = false"
         @getMarksWithFilter="getOffice()"
       />
@@ -158,7 +157,7 @@ onMounted(() => {
               </button>
             </div>
           </div>
-          <div class="content__filter-whom">
+          <div class="content__filter-whom" v-if="paramsObjects === 'office'">
             <div class="subtitle">
               Быстрый доступ
             </div>

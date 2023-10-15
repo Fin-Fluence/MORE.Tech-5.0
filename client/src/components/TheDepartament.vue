@@ -38,7 +38,7 @@ const kilometers = computed(() => {
                 <span v-if="(props.departament.load <= 20 && props.departament.load >= 0) " style="color: green;">
                     не заполнено
                 </span>
-                <span v-if="(props.departament.load <= 40 && props.departament.load >= 20)" style="color: orange;">
+                <span v-if="(props.departament.load <= 40 && props.departament.load > 20)" style="color: orange;">
                     заполнено
                 </span>
                 <span v-if="(props.departament.load >= 40)" style="color: #CA181F;">

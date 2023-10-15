@@ -5,6 +5,9 @@ import { useFilterStore } from '@/stores/filterStore';
 const props = defineProps({
     active: {
         type: Boolean,
+    },
+    activeObject: {
+        type: String,
     }
 })
 
@@ -54,7 +57,7 @@ const toggleBtn = (value) => {
                 <img src="@/assets/images/icons/close.svg">
             </div>
         </div>
-        <div class="filter__list custom-scroll">
+        <div class="filter__list custom-scroll" v-if="props.activeObject === 'office'">
             <div class="filter__item _checkbox">
                 <span class="title">
                     Доступно для маломобильных граждан
@@ -248,6 +251,125 @@ const toggleBtn = (value) => {
                 </span>
                 <label class="switch">
                     <input type="checkbox" v-model="filterStore.filter.registration_ip">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="filter__btns">
+                <button class="filter__btn btn btn_blue"
+                    @click="getMarksWithFilter()"
+                >
+                    Применить
+                </button>
+                <button class="filter__btn btn"
+                    @click="closeFilter()"
+                >
+                    Отмена
+                </button>
+            </div>
+        </div>
+        <div class="filter__list custom-scroll" v-if="props.activeObject === 'atm'">
+            <div class="filter__item _checkbox">
+                <span class="title">
+                    Доступно круглосуточно
+                </span>
+                <label class="switch">
+                    <input type="checkbox" v-model="filterStore.filter.all_day">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="filter__item _checkbox">
+                <span class="title">
+                    Доступно для маломобильных
+                </span>
+                <label class="switch">
+                    <input type="checkbox" v-model="filterStore.filter.wheelchair">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="filter__item _checkbox">
+                <span class="title">
+                    Оборудование для слабовидящих
+                </span>
+                <label class="switch">
+                    <input type="checkbox" v-model="filterStore.filter.blind">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="filter__item _money">
+                <span class="title">
+                    Снять
+                </span>
+                <div class="btns">
+                    <button>
+                        <img src="@/assets/images/icons/rub.svg">
+                    </button>
+                    <button>
+                        <img src="@/assets/images/icons/dollar.svg">
+                    </button>
+                    <button>
+                        <img src="@/assets/images/icons/evro.svg">
+                    </button>
+                </div>
+                <p>
+                    до
+                </p>
+                <input value="1 000 000">
+            </div>
+            <div class="filter__item _money">
+                <span class="title">
+                    Внести
+                </span>
+                <div class="btns">
+                    <button>
+                        <img src="@/assets/images/icons/rub.svg">
+                    </button>
+                    <button>
+                        <img src="@/assets/images/icons/dollar.svg">
+                    </button>
+                    <button>
+                        <img src="@/assets/images/icons/evro.svg">
+                    </button>
+                </div>
+                <p>
+                    до
+                </p>
+                <input value="1 000 000">
+            </div>
+            <div class="filter__item _money">
+                <span class="title">
+                    Перевести
+                </span>
+                <div class="btns">
+                    <button>
+                        <img src="@/assets/images/icons/rub.svg">
+                    </button>
+                    <button>
+                        <img src="@/assets/images/icons/dollar.svg">
+                    </button>
+                    <button>
+                        <img src="@/assets/images/icons/evro.svg">
+                    </button>
+                </div>
+                <p>
+                    до
+                </p>
+                <input value="1 000 000">
+            </div>
+            <div class="filter__item _checkbox">
+                <span class="title">
+                    Снять наличные по QR-коду
+                </span>
+                <label class="switch">
+                    <input type="checkbox" v-model="filterStore.filter.qrRead">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="filter__item _checkbox">
+                <span class="title">
+                    Платежи по QR-коду
+                </span>
+                <label class="switch">
+                    <input type="checkbox" v-model="filterStore.filter.nfcForBankCards">
                     <span class="slider round"></span>
                 </label>
             </div>

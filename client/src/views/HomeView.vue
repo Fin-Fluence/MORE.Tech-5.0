@@ -193,6 +193,14 @@ onMounted(() => {
               @click="filterCurrentFepartament(departament.id)"
           />
       </div>
+      <div class="departaments__lead" v-if="!offices.length">
+        <span v-if="paramsObjects === 'office' ">
+          Отделений не найдено
+        </span>
+        <span v-else> 
+          Банкоматов не найдено
+        </span>
+      </div>
       </div>
     </div>
     <the-map
@@ -214,42 +222,47 @@ onMounted(() => {
   border-radius: 12px;
   left: 50%;
   transform: translate(-50%, 0);
-  @media (max-width: 539px) {
+  z-index: 5;
+  @media (max-width: 899px) {
     display: block;
   }
 }
 .departaments {
   overflow: auto;
   flex: 1;
+  &__lead {
+    color: #fff;
+  }
 }
 .home {
   position: relative;
   display: flex;
-  @media (max-width: 539px) {
+  @media (max-width: 899px) {
     flex-direction: column-reverse;
   }
 }
 .content {
   background: #1E1E1E;
-  padding: 40px 16px 0px;
+  padding: 20px 16px 0px;
   width: auto;
-  max-width: 425px;
+  max-width: 500px;
   height: 100%;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 107px);
+  height: calc(100vh - 67px);
   position: relative;
   overflow: hidden;
-  @media (max-width: 539px) {
+  @media (max-width: 899px) {
     transition: .2s;
     position: absolute;
     z-index: 5;
-    height: calc(100vh - 107px);
+    height: 40vh;
     top: 100%;
     width: 100%;
     max-width: none;
     &.openFull {
       top: 0px;
+      height: calc(100vh - 67px);
     }
   }
   &__header {
@@ -260,17 +273,21 @@ onMounted(() => {
     background: #2f3441;
     position: relative;
     border-radius: 8px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     & input {
       width: 100%;
       background: transparent;
-      padding: 0 27px;
-      padding: 14px 33px;
+      padding: 7px 33px;
+      font-size: 14px;
+      &::placeholder {
+        font-size: 14px;
+      }
     }
     & .icon {
       position: absolute;
       top: 50%;
       transform: translate(0, -50%);
+      width: 14px;
     }
     & .close {
       right: 10px;
@@ -300,19 +317,18 @@ onMounted(() => {
   &__filter-top {
     display: flex;
     gap: 18px;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
 
   &__filter-whom {
-    margin-bottom: 40px;
-
+    margin-bottom: 20px;
   }
 
   &__whom-list {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    @media (max-width: 539px) {
+    @media (max-width: 899px) {
       flex-wrap: nowrap;
       overflow: auto;
     }
@@ -320,7 +336,7 @@ onMounted(() => {
 
   &__whom-btn {
     border: 1px solid #4789EB;
-    @media (max-width: 539px) {
+    @media (max-width: 899px) {
       white-space: nowrap;
     }
     &.btn {

@@ -189,7 +189,7 @@ function generateRouteLink() {
     & p {
         color: var(--absolute-input-gray, #ACB6C3);
         font-family: VTB Group UI;
-        font-size: 18px;
+        font-size: 16px;
         font-style: normal;
         font-weight: 400;
         line-height: 140%; /* 25.2px */
@@ -197,7 +197,7 @@ function generateRouteLink() {
     & span {
         color: var(--absolute-100, #FFF);
         font-family: VTB Group UI;
-        font-size: 18px;
+        font-size: 16px;
         font-style: normal;
         font-weight: 400;
         line-height: 140%; /* 25.2px */
@@ -254,7 +254,7 @@ function generateRouteLink() {
 &__title {
     color: var(--absolute-100, #FFF);
     font-family: VTB Group UI;
-    font-size: 18px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 140%; /* 25.2px */

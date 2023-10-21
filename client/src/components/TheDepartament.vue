@@ -75,7 +75,7 @@ const kilometers = computed(() => {
     &__address {
         color: var(--absolute-100, #FFF);
         font-family: VTB Group UI;
-        font-size: 18px;
+            font-size: 16px;
         font-style: normal;
         font-weight: 400;
         line-height: 140%;
@@ -106,7 +106,7 @@ const kilometers = computed(() => {
     &__distance {
         color: #FFF;
         font-family: VTB Group UI;
-        font-size: 18px;
+            font-size: 16px;
         font-style: normal;
         font-weight: 400;
         line-height: 140%; /* 25.2px */
